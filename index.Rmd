@@ -21,3 +21,4 @@ There are two options for how to input an image stored on your device into a web
 
 If you'd like to learn more about this website, visit [this page](about.html).
 
+Now I can put stuff on the internet!
