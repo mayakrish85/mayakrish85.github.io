@@ -1,24 +1,23 @@
 ---
-title: "Plotly"
-author: "Maya Krishnamoorthy"
-date: "2024-10-22"
+title: "Dashboards!"
 output: 
-  html_document:
-    toc: true
-    toc_float: true
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
 ---
 
-# Here are some plots.
+```{r setup, include=FALSE}
+library(flexdashboard)
 
-Today, we will make interactive plots in plotly. We'll make examples using the NYC AirBnB dataset.
-
-```{r}
 library(tidyverse)
 library(p8105.datasets)
 library(plotly)
 ```
 
-Do some initial data cleaning / subsetting.
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
 
 ```{r}
 data(nyc_airbnb)
@@ -33,9 +32,19 @@ nyc_airbnb =
     neighbourhood_group == "Manhattan",
     room_type == "Entire home/apt",
     price %in% 100:500)
+
+nyc_airbnb |> 
+  mutate(neighbourhood = fct_reorder(neighbourhood, price)) |> 
+  plot_ly(
+    x = ~neighbourhood, y = ~price, color = ~neighbourhood,
+    type = "box", colors = "viridis"
+  )
 ```
 
-Use `plotly` to make some quick plots.
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
 
 ```{r}
 nyc_airbnb |>
@@ -46,18 +55,7 @@ nyc_airbnb |>
   )
 ```
 
-Next up -- box plot.
-
-```{r}
-nyc_airbnb |> 
-  mutate(neighbourhood = fct_reorder(neighbourhood, price)) |> 
-  plot_ly(
-    x = ~neighbourhood, y = ~price, color = ~neighbourhood,
-    type = "box", colors = "viridis"
-  )
-```
-
-Let's do a bar chart with the number of rentals.
+### Chart C
 
 ```{r}
 nyc_airbnb |> 
@@ -68,4 +66,3 @@ nyc_airbnb |>
     type = "bar"
   )
 ```
-
