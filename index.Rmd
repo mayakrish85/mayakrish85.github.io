@@ -1,24 +1,51 @@
 ---
-title: "My awesome website"
+title: "Welcome!"
 output: 
   html_document:
     toc: true
     toc_float: true
+    theme: cosmo  # Optional: Adds a Bootstrap-based theme for a clean look
+    self_contained: true
 ---
 
-# This is Maya's awesome website
+<!-- Profile Picture Section -->
+<div style="text-align: center; margin-top: 20px;">
+  <img src="images/profile_picture.jpg" 
+       style="width: 300px; height: 300px; border-radius: 50%; object-fit: cover; margin-bottom: 20px;" 
+       alt="Profile Picture">
+</div>
 
-![](https://media.giphy.com/media/drXGoW1iudhKw/giphy.gif)
+<!-- Header Section -->
+<div style="text-align: center; margin-top: 10px;">
+  <h1>Maya Krishnamoorthy</h1>
+  <h4>M.S. Candidate, Biostatistics, Columbia University</h4>
+  
+  <p>
+    <a href="https://github.com/mayakrish85">GitHub</a> | 
+    <a href="https://www.linkedin.com/in/mayakrishn/">LinkedIn</a> | 
+    <a href="mk4995@cumc.columbia.edu">Email</a>
+  </p>
+</div>
 
-This is an **awesome website** about data science (and Elmo)?
+---
 
-Sometimes I use [google](https://www.google.com/) to do data science when I'm stuck.
+## About Me
 
+Hi! I'm Maya. I am a first-year Master's student at Columbia University's Mailman School of Public Health. I am currently studying to get my M.S. in Biostatistics, with a concentration in Public Health Data Science. I graduated in May 2024 from the University of North Carolina at Chapel Hill (go Tar Heels!), with a B.S. in Computer Science and a B.S.P.H. in Biostatistics from the Gillings School of Global Public Health.
 
-There are two options for how to input an image stored on your device into a website:
-`![](images/image.jpg)`  
-`<img src="images/image.jpg" style="width:75%">`
+I also work at the Butler Aging Center at Columbia as a Graduate Research Assistant in the Aiello Research Group. Here, I aid in quantitative tasks and data analysis in SAS and R to prepare presentations and manuscripts related to the Add Health longitudinal study. I also perform data audits and assist with quality control of data collection and reporting.
 
-If you'd like to learn more about this website, visit [this page](about.html).
+---
 
-Now I can put stuff on the internet!
+## General Information
+
+This website is for Homework 4 in P8105. This will soon be used as my personal projects website.
+
+<!-- Contact Button -->
+<div style="text-align: center; margin-top: 20px;">
+  <a href="mailto:mk4995@cumc.columbia.edu">
+    <button style="background-color: #ddd; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer;">
+      Contact Me
+    </button>
+  </a>
+</div>

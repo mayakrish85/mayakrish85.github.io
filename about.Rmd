@@ -1,11 +1,13 @@
 ---
-title: "My awesome website"
+layout: archive
 output: 
   html_document:
     toc: true
     toc_float: true
 ---
 
-# Information about this website
+## Resume
 
-This website was made as an example in [P8105](https://p8105.com/) for "Making Websites." I'm making it in RMD and will use GitHub for posting.
+You can download a copy of my resume below.
+
+<embed src="docs/resume.pdf" type="application/pdf" width="100%" height=800px/>
