@@ -1,18 +1,14 @@
 ---
-title: "NYC Restaurant Inspections Dashboard"
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+title: "Data Cleaning"
+output: html_document
 ---
 
-```{r setup, include=FALSE}
-library(flexdashboard)
+I used the following code to clean the data and make graphs in [NYC Restaurant Inspections](https://p8105.com/dataset_restaurant_inspections.html).
+
+```{r eval = FALSE}
 library(tidyverse)
 library(p8105.datasets)
 library(plotly)
-library(httr)
-library(jsonlite)
 
 theme_set(
   ggthemes::theme_fivethirtyeight() + theme(legend.position = "bottom")
@@ -20,7 +16,12 @@ theme_set(
 
 scale_colour_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
+```
 
+
+```{r eval = FALSE}
+library(httr)
+library(jsonlite)
 
 get_all_inspections = function(url) {
   
@@ -61,12 +62,7 @@ nyc_inspections =
 ```
 
 
-Column {data-width=500}
------------------------
-
-### Distribution of Cuisines by Borough in NYC
-
-```{r}
+```{r eval=FALSE}
 # plot of cuisines by borough
 nyc_inspections |> 
   filter(boro != 0) |> 
@@ -85,14 +81,8 @@ nyc_inspections |>
   )
 ```
  
- 
 
-Column {data-width=500}
------------------------
-
-### Distribution of Scores by Borough in NYC
-
-```{r}
+```{r eval=FALSE}
 nyc_inspections |> 
   filter(boro != 0) |> 
   mutate(score = as.numeric(score)) |> 
@@ -108,4 +98,8 @@ nyc_inspections |>
   )
 ```
 
+
+```{r}
+# score distribution for asian restaurants
+```
 

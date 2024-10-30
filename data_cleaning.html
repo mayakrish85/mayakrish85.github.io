@@ -11,7 +11,7 @@
 
 
 
-<title>about.knit</title>
+<title>Data Cleaning</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -283,15 +283,93 @@ $(document).ready(function () {
 
 
 
+<h1 class="title toc-ignore">Data Cleaning</h1>
 
 </div>
 
 
-<div id="resume" class="section level2">
-<h2>Resume</h2>
-<p>You can download a copy of my resume below.</p>
-<embed src="docs/resume.pdf" type="application/pdf" width="100%" height=800px/>
-</div>
+<p>I used the following code to clean the data and make graphs in <a
+href="https://p8105.com/dataset_restaurant_inspections.html">NYC
+Restaurant Inspections</a>.</p>
+<pre class="r"><code>library(tidyverse)
+library(p8105.datasets)
+library(plotly)
+
+theme_set(
+  ggthemes::theme_fivethirtyeight() + theme(legend.position = &quot;bottom&quot;)
+  )
+
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d</code></pre>
+<pre class="r"><code>library(httr)
+library(jsonlite)
+
+get_all_inspections = function(url) {
+  
+  all_inspections = vector(&quot;list&quot;, length = 0)
+  
+  loop_index = 1
+  chunk_size = 50000
+  DO_NEXT = TRUE
+  
+  while (DO_NEXT) {
+    message(&quot;Getting data, page &quot;, loop_index)
+    
+    all_inspections[[loop_index]] = 
+      GET(url,
+          query = list(`$order` = &quot;zipcode&quot;,
+                       `$limit` = chunk_size,
+                       `$offset` = as.integer((loop_index - 1) * chunk_size)
+                       )
+          ) %&gt;%
+      content(&quot;text&quot;) %&gt;%
+      fromJSON() %&gt;%
+      as_tibble()
+    
+    DO_NEXT = dim(all_inspections[[loop_index]])[1] == chunk_size
+    loop_index = loop_index + 1
+  }
+  
+  all_inspections
+  
+}
+
+url = &quot;https://data.cityofnewyork.us/resource/43nn-pn8j.json&quot;
+
+nyc_inspections = 
+  get_all_inspections(url) %&gt;%
+  bind_rows() |&gt; 
+  janitor::clean_names()</code></pre>
+<pre class="r"><code># plot of cuisines by borough
+nyc_inspections |&gt; 
+  filter(boro != 0) |&gt; 
+  group_by(boro, cuisine_description) |&gt; 
+  summarize(count = n(), .groups = &#39;drop&#39;) |&gt; 
+  plot_ly(
+    x = ~cuisine_description, y = ~count, color = ~boro,
+    type = &quot;bar&quot;, text = ~paste(&quot;Borough:&quot;, boro, &quot;&lt;br&gt;Count:&quot;, count)
+  ) |&gt; 
+  layout(
+    title = &quot;Distribution of Cuisines by Borough in NYC&quot;,
+    xaxis = list(title = &quot;Cuisine&quot;, tickangle = -90, tickfont = list(size = 6)),
+    yaxis = list(title = &quot;Count&quot;),
+    barmode = &#39;stack&#39;,
+    legend = list(orientation = &quot;h&quot;, x = 0.5, xanchor = &#39;center&#39;, y = -0.2)
+  )</code></pre>
+<pre class="r"><code>nyc_inspections |&gt; 
+  filter(boro != 0) |&gt; 
+  mutate(score = as.numeric(score)) |&gt; 
+  group_by(boro) |&gt; 
+  filter(score %in% 0:100)  |&gt; 
+  plot_ly(
+    y = ~score, x = ~boro, color = ~boro,
+    type = &quot;box&quot;, colors = &quot;viridis&quot;) |&gt; 
+  layout(
+    title = &quot;Distribution of Scores by Borough in NYC&quot;,
+    xaxis = list(title = &quot;Borough&quot;),
+    yaxis = list(title = &quot;Score&quot;)
+  )</code></pre>
+<pre class="r"><code># score distribution for asian restaurants</code></pre>
 
 
 
