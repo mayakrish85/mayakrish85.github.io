@@ -291,18 +291,19 @@ $(document).ready(function () {
 <p>I used the following code to clean the data and make graphs in <a
 href="https://p8105.com/dataset_restaurant_inspections.html">NYC
 Restaurant Inspections</a>.</p>
+<p>Step 1: Import the data.</p>
 <pre class="r"><code>library(tidyverse)
 library(p8105.datasets)
 library(plotly)
+library(httr)
+library(jsonlite)
 
 theme_set(
   ggthemes::theme_fivethirtyeight() + theme(legend.position = &quot;bottom&quot;)
   )
 
 scale_colour_discrete = scale_color_viridis_d
-scale_fill_discrete = scale_fill_viridis_d</code></pre>
-<pre class="r"><code>library(httr)
-library(jsonlite)
+scale_fill_discrete = scale_fill_viridis_d
 
 get_all_inspections = function(url) {
   
@@ -340,6 +341,9 @@ nyc_inspections =
   get_all_inspections(url) %&gt;%
   bind_rows() |&gt; 
   janitor::clean_names()</code></pre>
+<p>To make the bar graph showing the distribution of cuisines across the
+5 boroughs, I filtered and by borough and cuisine, and gathered the
+counts.</p>
 <pre class="r"><code># plot of cuisines by borough
 nyc_inspections |&gt; 
   filter(boro != 0) |&gt; 
@@ -351,12 +355,48 @@ nyc_inspections |&gt;
   ) |&gt; 
   layout(
     title = &quot;Distribution of Cuisines by Borough in NYC&quot;,
-    xaxis = list(title = &quot;Cuisine&quot;, tickangle = -90, tickfont = list(size = 6)),
+    xaxis = list(title = &quot;Cuisine&quot;, tickangle = -90, tickfont = list(size = 8)),
     yaxis = list(title = &quot;Count&quot;),
     barmode = &#39;stack&#39;,
     legend = list(orientation = &quot;h&quot;, x = 0.5, xanchor = &#39;center&#39;, y = -0.2)
   )</code></pre>
-<pre class="r"><code>nyc_inspections |&gt; 
+<p>To make a map of the South Asian restaurants in Manhattan, I used
+<code>leaflet</code>. I converted grade to a factor variable, and used
+created a label that showed the restaurant name and grade as well.</p>
+<pre class="r"><code>library(leaflet)
+
+rest_grade_map = 
+  nyc_inspections |&gt; 
+  filter(
+    grade != &quot;N&quot;,
+    cuisine_description == c(&quot;Bangladeshi&quot;, &quot;Indian&quot;, &quot;Pakistani&quot;),
+    boro != 0) |&gt; 
+  mutate(
+    latitude = as.numeric(latitude),
+    longitude = as.numeric(longitude),
+    grade = factor(grade, levels = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;Z&quot;, &quot;P&quot;))
+  ) |&gt; 
+  na.omit(grade)
+
+factpal &lt;- colorFactor(
+  palette = &quot;viridis&quot;,
+  domain = rest_grade_map$grade
+)
+
+rest_grade_map |&gt; 
+  mutate(click_label = str_c(dba, &quot;, Grade: &quot;, grade)) |&gt; 
+  leaflet() |&gt; 
+  addProviderTiles(providers$CartoDB.Positron) |&gt; 
+  addCircleMarkers(
+    ~longitude, ~latitude,
+    color = ~factpal(grade), radius = 4, label = ~click_label
+  ) |&gt; 
+  addLegend(&quot;bottomright&quot;, pal = factpal, values = ~grade, title = &quot;Grade&quot;)</code></pre>
+<p>To make the box plot of scores by borough, I converted score to a
+numeric variable, grouped by borough, and filtered the scores between 0
+and 100.</p>
+<pre class="r"><code># plot of scores by borough
+nyc_inspections |&gt; 
   filter(boro != 0) |&gt; 
   mutate(score = as.numeric(score)) |&gt; 
   group_by(boro) |&gt; 
@@ -369,7 +409,6 @@ nyc_inspections |&gt;
     xaxis = list(title = &quot;Borough&quot;),
     yaxis = list(title = &quot;Score&quot;)
   )</code></pre>
-<pre class="r"><code># score distribution for asian restaurants</code></pre>
 
 
 

@@ -37,7 +37,7 @@ I also work at the Butler Aging Center at Columbia as a Graduate Research Assist
 
 ## General Information
 
-This website is for Homework 4 in P8105. In this homework, I will create a [dashboard](plots.html) that describe the distribution of data in [NYC Restaurant Inspections](https://p8105.com/dataset_restaurant_inspections.html). To see code on how this code was cleaned, please visit [this](data_cleaning.html) page.
+This website is for Homework 4 in P8105. In this homework, I will create a [dashboard](plots.html) that describe the distribution of data in [NYC Restaurant Inspections](https://p8105.com/dataset_restaurant_inspections.html). To see how this code was cleaned and how the visualizations were created with `plotly`, please visit [this](data_cleaning.html) page.
 
 
 This will soon be used as my personal projects website.

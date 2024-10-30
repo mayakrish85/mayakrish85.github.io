@@ -5,10 +5,13 @@ output: html_document
 
 I used the following code to clean the data and make graphs in [NYC Restaurant Inspections](https://p8105.com/dataset_restaurant_inspections.html).
 
+Step 1: Import the data.
 ```{r eval = FALSE}
 library(tidyverse)
 library(p8105.datasets)
 library(plotly)
+library(httr)
+library(jsonlite)
 
 theme_set(
   ggthemes::theme_fivethirtyeight() + theme(legend.position = "bottom")
@@ -16,12 +19,6 @@ theme_set(
 
 scale_colour_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
-```
-
-
-```{r eval = FALSE}
-library(httr)
-library(jsonlite)
 
 get_all_inspections = function(url) {
   
@@ -61,7 +58,7 @@ nyc_inspections =
   janitor::clean_names()
 ```
 
-
+To make the bar graph showing the distribution of cuisines across the 5 boroughs, I filtered and by borough and cuisine, and gathered the counts. 
 ```{r eval=FALSE}
 # plot of cuisines by borough
 nyc_inspections |> 
@@ -81,8 +78,44 @@ nyc_inspections |>
   )
 ```
  
+To make a map of the South Asian restaurants in Manhattan, I used `leaflet`. I converted grade to a factor variable, and used created a label that showed the restaurant name and grade as well.
 
 ```{r eval=FALSE}
+library(leaflet)
+
+rest_grade_map = 
+  nyc_inspections |> 
+  filter(
+    grade != "N",
+    cuisine_description == c("Bangladeshi", "Indian", "Pakistani"),
+    boro != 0) |> 
+  mutate(
+    latitude = as.numeric(latitude),
+    longitude = as.numeric(longitude),
+    grade = factor(grade, levels = c("A", "B", "C", "Z", "P"))
+  ) |> 
+  na.omit(grade)
+
+factpal <- colorFactor(
+  palette = "viridis",
+  domain = rest_grade_map$grade
+)
+
+rest_grade_map |> 
+  mutate(click_label = str_c(dba, ", Grade: ", grade)) |> 
+  leaflet() |> 
+  addProviderTiles(providers$CartoDB.Positron) |> 
+  addCircleMarkers(
+    ~longitude, ~latitude,
+    color = ~factpal(grade), radius = 4, label = ~click_label
+  ) |> 
+  addLegend("bottomright", pal = factpal, values = ~grade, title = "Grade")
+```
+
+To make the box plot of scores by borough, I converted score to a numeric variable, grouped by borough, and filtered the scores between 0 and 100. 
+
+```{r eval=FALSE}
+# plot of scores by borough
 nyc_inspections |> 
   filter(boro != 0) |> 
   mutate(score = as.numeric(score)) |> 
@@ -96,10 +129,5 @@ nyc_inspections |>
     xaxis = list(title = "Borough"),
     yaxis = list(title = "Score")
   )
-```
-
-
-```{r}
-# score distribution for asian restaurants
 ```
 
