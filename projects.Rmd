@@ -3,4 +3,61 @@ title: "Projects"
 output: html_document
 ---
 
-Test!
+```{r setup, include=FALSE}
+library(yaml)
+library(purrr)
+
+cfg <- yaml::read_yaml("projects.yml")
+projects <- cfg$projects
+
+# helper: %||% (use default if NULL)
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
+# sort projects by order (desc), then date (desc) if you want later
+ord <- map_int(projects, ~ .x$order %||% 0)
+projects <- projects[order(ord, decreasing = TRUE)]
+
+## projects <- cfg$projects |> dplyr::bind_rows()
+```
+
+```{r}
+for (p in projects) {
+
+# Local page link by default
+
+url <- p$page$output_file
+
+# If you later mark a project as external with:
+
+# page: { href: "...", external: true }
+
+is_external <- !is.null(p$page$external) && isTRUE(p$page$external)
+if (is_external) url <- p$page$href
+
+# Make external links open in a new tab (HTML anchor is easiest)
+
+a_tag <- if (is_external) {
+sprintf("<a href='%s' target='_blank' rel='noopener'>%s</a>", url, p$title)
+} else {
+sprintf("<a href='%s'>%s</a>", url, p$title)
+}
+
+cat(sprintf("- **%s** — %s\n", a_tag, p$summary))
+}
+
+```
+
+
+```{r}
+# all_projects <- projects %>% arrange(desc(.x$order))
+# 
+# for (p in all_projects) {
+# cat(sprintf(
+# "- **[%s](%s)** — %s\n",
+# p$title,
+# p$page$output_file,
+# p$summary
+# ))
+# }
+```
+

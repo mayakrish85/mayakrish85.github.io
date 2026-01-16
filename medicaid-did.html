@@ -11,7 +11,7 @@
 
 
 
-<title>Projects</title>
+<title>Causal Inference Analysis of Medicaid Expansion and Mortality</title>
 
 <script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -280,47 +280,13 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Projects</h1>
+<h1 class="title toc-ignore">Causal Inference Analysis of Medicaid
+Expansion and Mortality</h1>
 
 </div>
 
 
-<pre class="r"><code>for (p in projects) {
 
-# Local page link by default
-
-url &lt;- p$page$output_file
-
-# If you later mark a project as external with:
-
-# page: { href: &quot;...&quot;, external: true }
-
-is_external &lt;- !is.null(p$page$external) &amp;&amp; isTRUE(p$page$external)
-if (is_external) url &lt;- p$page$href
-
-# Make external links open in a new tab (HTML anchor is easiest)
-
-a_tag &lt;- if (is_external) {
-sprintf(&quot;&lt;a href=&#39;%s&#39; target=&#39;_blank&#39; rel=&#39;noopener&#39;&gt;%s&lt;/a&gt;&quot;, url, p$title)
-} else {
-sprintf(&quot;&lt;a href=&#39;%s&#39;&gt;%s&lt;/a&gt;&quot;, url, p$title)
-}
-
-cat(sprintf(&quot;- **%s** — %s\n&quot;, a_tag, p$summary))
-}</code></pre>
-<pre><code>## - **&lt;a href=&#39;medicaid-did.html&#39;&gt;Causal Inference Analysis of Medicaid Expansion and Mortality&lt;/a&gt;** — DiD + event-study replication on multi-state panel data with Monte Carlo stress tests for identification assumptions and robustness.
-## 
-## - **&lt;a href=&#39;https://mayakrish85.github.io/t2d.github.io/index.html&#39; target=&#39;_blank&#39; rel=&#39;noopener&#39;&gt;Epidemiological Approach to Type II Diabetes (T2D) in the U.S.&lt;/a&gt;** — Analyzed 60K+ BRFSS records and deployed an interactive Shiny dashboard to explore geographic and population-level risk patterns.</code></pre>
-<pre class="r"><code># all_projects &lt;- projects %&gt;% arrange(desc(.x$order))
-# 
-# for (p in all_projects) {
-# cat(sprintf(
-# &quot;- **[%s](%s)** — %s\n&quot;,
-# p$title,
-# p$page$output_file,
-# p$summary
-# ))
-# }</code></pre>
 
 
 

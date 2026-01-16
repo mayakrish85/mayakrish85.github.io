@@ -1,0 +1,95 @@
+version: 1
+
+paths:
+  # Where pages live in your repo
+  pages_dir: "site"              # e.g., site/index.Rmd, site/projects.Rmd
+  projects_dir: "site/projects"  # individual project pages
+  assets_dir: "site/assets"      # images used on the site
+
+defaults:
+  output:
+    html_document:
+      toc: true
+      toc_depth: 2
+      theme: flatly  # optional; ignore if you use your own css
+  card:
+    show_tags: true
+    show_tools: true
+    max_bullets: 3
+
+taxonomies:
+  categories:
+    causal-inference: "Causal Inference"
+    graphical-models: "Graphical Models"
+    high-dimensional-ml: "High-Dimensional & ML"
+    statistical-genetics: "Statistical Genetics"
+    data-viz: "Data Science & Visualization"
+    data-systems: "Data Systems (SQL/ETL)"
+
+projects:
+  - id: medicaid-did
+    title: "Causal Inference Analysis of Medicaid Expansion and Mortality"
+    date: "2025-12"
+    featured: true
+    order: 10
+
+    categories: [causal-inference]
+    methods: [DiD, Event study, Potential outcomes, Monte Carlo, Bootstrap]
+    tools: [R]
+
+    # Used on cards and the project header
+    summary: >
+      DiD + event-study replication on multi-state panel data with Monte Carlo stress tests
+      for identification assumptions and robustness.
+
+    bullets:
+      - "Implemented DiD and event-study estimators on multi-state panel data (paper replication)."
+      - "Ran 1,000 Monte Carlo bootstrap simulations to evaluate estimator bias/variance under alternative DGPs."
+      - "Robustness checks across model specifications to probe parallel trends and causal validity."
+
+    links:
+      repo: "https://github.com/yourname/medicaid-did"
+      report: null
+      app: null
+
+    media:
+      thumbnail: "assets/projects/medicaid/thumb.png"
+      hero: "assets/projects/medicaid/hero.png"
+
+    # Rmd wiring (key for your setup)
+    page:
+      rmd: "medicaid-did.Rmd"     # source file
+      output_file: "medicaid-did.html" # where it builds to (relative to site root)
+      slug: "medicaid-did"
+      draft: false
+
+  - id: t2d-shiny
+    title: "Epidemiological Approach to Type II Diabetes (T2D) in the U.S."
+    date: "2024-11"
+    featured: true
+    order: 7
+
+    categories: [data-viz]
+    methods: [Regression, Risk factors]
+    tools: [R, Shiny]
+
+    summary: >
+      Analyzed 60K+ BRFSS records and deployed an interactive Shiny dashboard to explore
+      geographic and population-level risk patterns.
+
+    bullets:
+      - "Regression analysis to identify demographic and behavioral risk factors for T2D."
+      - "Shiny dashboard for exploratory cohort analysis across states and subpopulations."
+
+    links:
+      repo: null
+      app: "https://mayakrish85.github.io/t2d.github.io/"
+      report: null
+
+    media:
+      thumbnail: "assets/projects/t2d/thumb.png"
+      hero: null
+
+    page:
+      href: "https://mayakrish85.github.io/t2d.github.io/index.html"
+      external: true
