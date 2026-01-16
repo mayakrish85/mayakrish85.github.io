@@ -11,9 +11,9 @@
 
 
 
-<title>Data Cleaning</title>
+<title>Projects</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -32,8 +32,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -251,10 +251,7 @@ $(document).ready(function () {
   <a href="about.html">Resume</a>
 </li>
 <li>
-  <a href="data_cleaning.html">Code</a>
-</li>
-<li>
-  <a href="plots.html">Dashboard</a>
+  <a href="projects.html">Projects</a>
 </li>
 <li>
   <a href="mailto:&lt;mk4995@cumc.columbia.edu&gt;">
@@ -283,132 +280,12 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Data Cleaning</h1>
+<h1 class="title toc-ignore">Projects</h1>
 
 </div>
 
 
-<p>I used the following code to clean the data and make graphs in <a
-href="https://p8105.com/dataset_restaurant_inspections.html">NYC
-Restaurant Inspections</a>.</p>
-<p>Step 1: Import the data.</p>
-<pre class="r"><code>library(tidyverse)
-library(p8105.datasets)
-library(plotly)
-library(httr)
-library(jsonlite)
-
-theme_set(
-  ggthemes::theme_fivethirtyeight() + theme(legend.position = &quot;bottom&quot;)
-  )
-
-scale_colour_discrete = scale_color_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
-
-get_all_inspections = function(url) {
-  
-  all_inspections = vector(&quot;list&quot;, length = 0)
-  
-  loop_index = 1
-  chunk_size = 50000
-  DO_NEXT = TRUE
-  
-  while (DO_NEXT) {
-    message(&quot;Getting data, page &quot;, loop_index)
-    
-    all_inspections[[loop_index]] = 
-      GET(url,
-          query = list(`$order` = &quot;zipcode&quot;,
-                       `$limit` = chunk_size,
-                       `$offset` = as.integer((loop_index - 1) * chunk_size)
-                       )
-          ) %&gt;%
-      content(&quot;text&quot;) %&gt;%
-      fromJSON() %&gt;%
-      as_tibble()
-    
-    DO_NEXT = dim(all_inspections[[loop_index]])[1] == chunk_size
-    loop_index = loop_index + 1
-  }
-  
-  all_inspections
-  
-}
-
-url = &quot;https://data.cityofnewyork.us/resource/43nn-pn8j.json&quot;
-
-nyc_inspections = 
-  get_all_inspections(url) %&gt;%
-  bind_rows() |&gt; 
-  janitor::clean_names()</code></pre>
-<p>To make the bar graph showing the distribution of cuisines across the
-5 boroughs, I filtered and by borough and cuisine, and gathered the
-counts.</p>
-<pre class="r"><code># plot of cuisines by borough
-nyc_inspections |&gt; 
-  filter(boro != 0) |&gt; 
-  group_by(boro, cuisine_description) |&gt; 
-  summarize(count = n(), .groups = &#39;drop&#39;) |&gt; 
-  plot_ly(
-    x = ~cuisine_description, y = ~count, color = ~boro,
-    type = &quot;bar&quot;, text = ~paste(&quot;Borough:&quot;, boro, &quot;&lt;br&gt;Count:&quot;, count)
-  ) |&gt; 
-  layout(
-    title = &quot;Distribution of Cuisines by Borough in NYC&quot;,
-    xaxis = list(title = &quot;Cuisine&quot;, tickangle = -90, tickfont = list(size = 8)),
-    yaxis = list(title = &quot;Count&quot;),
-    barmode = &#39;stack&#39;,
-    legend = list(orientation = &quot;h&quot;, x = 0.5, xanchor = &#39;center&#39;, y = -0.2)
-  )</code></pre>
-<p>To make a map of the South Asian restaurants in Manhattan, I used
-<code>leaflet</code>. I converted grade to a factor variable, and used
-created a label that showed the restaurant name and grade as well.</p>
-<pre class="r"><code>library(leaflet)
-
-rest_grade_map = 
-  nyc_inspections |&gt; 
-  filter(
-    grade != &quot;N&quot;,
-    cuisine_description == c(&quot;Bangladeshi&quot;, &quot;Indian&quot;, &quot;Pakistani&quot;),
-    boro != 0) |&gt; 
-  mutate(
-    latitude = as.numeric(latitude),
-    longitude = as.numeric(longitude),
-    grade = factor(grade, levels = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;Z&quot;, &quot;P&quot;))
-  ) |&gt; 
-  na.omit(grade)
-
-factpal &lt;- colorFactor(
-  palette = &quot;viridis&quot;,
-  domain = rest_grade_map$grade
-)
-
-rest_grade_map |&gt; 
-  mutate(click_label = str_c(dba, &quot;, Grade: &quot;, grade)) |&gt; 
-  leaflet() |&gt; 
-  addProviderTiles(providers$CartoDB.Positron) |&gt; 
-  addCircleMarkers(
-    ~longitude, ~latitude,
-    color = ~factpal(grade), radius = 4, label = ~click_label
-  ) |&gt; 
-  addLegend(&quot;bottomright&quot;, pal = factpal, values = ~grade, title = &quot;Grade&quot;)</code></pre>
-<p>To make the box plot of scores by borough, I converted score to a
-numeric variable, grouped by borough, and filtered the scores between 0
-and 100.</p>
-<pre class="r"><code># plot of scores by borough
-nyc_inspections |&gt; 
-  filter(boro != 0) |&gt; 
-  mutate(score = as.numeric(score)) |&gt; 
-  group_by(boro) |&gt; 
-  filter(score %in% 0:100)  |&gt; 
-  plot_ly(
-    y = ~score, x = ~boro, color = ~boro,
-    type = &quot;box&quot;, colors = &quot;viridis&quot;) |&gt; 
-  layout(
-    title = &quot;Distribution of Scores by Borough in NYC&quot;,
-    xaxis = list(title = &quot;Borough&quot;),
-    yaxis = list(title = &quot;Score&quot;)
-  )</code></pre>
+<p>Test!</p>
 
 
 
