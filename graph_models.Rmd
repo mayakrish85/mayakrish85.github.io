@@ -10,14 +10,14 @@ output:
 
 This project was completed in December 2025 for my course, "P8131: Graphical Models of Complex Health Data," at Columbia University.
 
-```{r project-tags, echo=FALSE}
+```{r project-tags, echo=FALSE, results='asis'}
 cat('
 <div class="project-tags">
-  <span class="tag tag-method">Graphical Models</span>
-  <span class="tag tag-data">fMRI</span>
-  <span class="tag tag-method">High-Dimensional</span>
-  <span class="tag tag-method">PC Algorithm</span>
-  <span class="tag tag-method">Graphical Lasso</span>
+  <span class="tag tag-method">Graphical Model Framework</span>
+  <span class="tag tag-data">fMRI dataset</span>
+  <span class="tag tag-data">High-Dimensional</span>
+  <span class="tag tag-method">PC Algorithm (DAGs)</span>
+  <span class="tag tag-method">Graphical Lasso (UGs)</span>
   <span class="tag tag-analysis">Classification (LOOCV)</span>
 </div>
 ')
