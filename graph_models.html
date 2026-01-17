@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Comparing Causal and Undirected Graphical Models for fMRI-Based Classification of Autism Spectrum Disorder</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="site.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Maya Krishnamoorthy</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="about.html">Resume</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Projects
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="graph_models.html">Graphical Models</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="mailto:&lt;mk4995@cumc.columbia.edu&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/mayakrish85/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/mayakrishn/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Comparing Causal and Undirected Graphical
+Models for fMRI-Based Classification of Autism Spectrum Disorder</h1>
+
+</div>
+
+
+<p>This project was completed in December 2025 for my course, “P8131:
+Graphical Models of Complex Health Data,” at Columbia University.</p>
+<pre><code>## 
+## &lt;div class=&quot;project-tags&quot;&gt;
+##   &lt;span class=&quot;tag tag-method&quot;&gt;Graphical Models&lt;/span&gt;
+##   &lt;span class=&quot;tag tag-data&quot;&gt;fMRI&lt;/span&gt;
+##   &lt;span class=&quot;tag tag-method&quot;&gt;High-Dimensional&lt;/span&gt;
+##   &lt;span class=&quot;tag tag-method&quot;&gt;PC Algorithm&lt;/span&gt;
+##   &lt;span class=&quot;tag tag-method&quot;&gt;Graphical Lasso&lt;/span&gt;
+##   &lt;span class=&quot;tag tag-analysis&quot;&gt;Classification (LOOCV)&lt;/span&gt;
+## &lt;/div&gt;</code></pre>
+<div id="project-description" class="section level1">
+<h1><strong>Project Description</strong></h1>
+<div id="course-description" class="section level2">
+<h2>Course Description</h2>
+<p>This is a course at the intersection of statistics and machine
+learning, focusing on graphical models. In complex systems with many
+(perhaps hundreds or thousands) of variables, the formalism of graphical
+models can make representation more compact, inference more tractable,
+and intelligent data-driven decision-making more feasible. We will focus
+on representational schemes based on directed and undirected graphical
+models and discuss statistical inference, prediction, and structure
+learning. We will emphasize applications of graph-based methods in areas
+relevant to health: genetics, neuroscience, epidemiology, image
+analysis, clinical support systems, and more. We will draw connections
+in lecture between theory and these application areas. The final project
+will be entirely “hands on,” where students will apply techniques
+discussed in class to real data and write up the results.</p>
+</div>
+<div id="project-goals" class="section level2">
+<h2>Project Goals</h2>
+<p>This is an open-ended data analysis project, where you can gain some
+experience applying methods based on graphical models to real data. You
+can use whatever methods you like, as long as they are related to the
+graphical methods we discuss in the course. Whatever graph(s) you
+specify or learn, you must also do some statistical test or parameter
+estimation based on the graph(s) to answer a substantive scientific
+question. You should compare at least two approaches/methods/settings.
+That is, you should consider what someone else might do alternatively to
+your proposal, try it, and compare results. You must justify all your
+analysis choices — how you chose tuning parameters, why you chose
+certain parametric forms or model classes, etc.</p>
+</div>
+</div>
+<div id="final-project" class="section level1">
+<h1><strong>Final Project</strong></h1>
+<p>All data and code is accessible <a
+href="https://github.com/mayakrish85/graphical_models_final">here</a>.</p>
+<div id="research-question" class="section level2">
+<h2>Research Question</h2>
+<p><em>Can you somehow reliably “predict” ASD status on the basis of
+learned connectivity networks? Can you use learned networks to classify
+individuals into ASD vs NT categories? What features, if any, of learned
+connectivity help predict ASD status?</em></p>
+<p>The goal of this project is to evaluate whether subject-specific
+brain connectivity networks estimated from resting-state fMRI data can
+be used to distinguish individuals with Autism Spectrum Disorder (ASD)
+from neurotypical (NT) controls. We aim to assess how different graph
+estimation methods can affect prediction/classification performance. We
+hypothesize that differences in structure learning approaches (PC vs
+graphical lasso) for graph estimation will lead to differences in
+predictive accuracy for ASD classification.</p>
+</div>
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>Functional brain connectivity data is very useful to understand ASD
+in neuroimaging research because it offers rich information about
+large-scale brain organization by measuring coordinated activity across
+many regions of interest (ROIs). However, these data are often extremely
+high-dimensional relative to the number of subjects, making naive
+modeling approaches noisy, difficult to interpret, and statistically
+unstable. This motivates the use of graphical models that impose
+structural constraints on the estimated network.</p>
+<p>Graphical models are well-suited to high-dimensional fMRI data
+because they aim to recover sparse conditional dependence structures,
+separating direct relationships from indirect associations. However,
+different graphical modeling approaches have varying target measures and
+rely on distinct assumptions. For instance, the PC algorithm performs
+hypothesis testing of conditional independence to recover equivalence
+classes of causal graphs, while graphical lasso estimates an undirected
+graph (using the precision matrix) via penalized likelihood.</p>
+<p>Using the PC skeleton as a reference structure provides a more direct
+comparison between these methods because it returns an undirected graph.
+By comparing graphs derived from graphical lasso to the PC skeleton, we
+can assess whether edges selected via penalized likelihood align with
+those selected by conditional independence tests. We can further
+evaluate whether differences in how these methods encode conditional
+dependence translate into meaningful differences in predicting ASD
+status.</p>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<div id="raw-data" class="section level3">
+<h3>Raw Data</h3>
+<p>To perform this analysis, we used resting-state <a
+href="https://rutgers.app.box.com/s/imgbdaqhzlkbunf52ia8xfmiu97b05xh">fMRI
+time-series measurements from CMU</a>. This data set consists of 14
+individuals with ASD and 13 NT controls aged 19-40. For each subject,
+neural activity was recorded on a fixed set of 160 ROIs, so that all
+individuals share the same number of variables. An accidental 161st ROI
+was removed from the raw data for all subjects. The number of time
+points varies slightly across subjects due to preprocessing steps that
+remove volumes affected by head motion or other artifacts. On average,
+each participant contributed approximately 220 post-processed time
+points. Data were sampled every 2 seconds (TR = 2s), with a voxel
+resolution of 3mm × 3mm × 3mm. Participant-level metadata, including
+diagnostic status (1 = ASD, 2 = NT), was also provided. These labels
+were used as the outcome variable in prediction.</p>
+<pre class="r"><code>pheno = read_csv(&quot;data/graph_data/phenotypic_CMU.csv&quot;) %&gt;%
+  janitor::clean_names() %&gt;% 
+  mutate(diagnosis = factor(dx_group, levels = c(1, 2), labels = c(&quot;ASD&quot;, &quot;NT&quot;))) %&gt;% 
+  mutate(
+    y = if_else(diagnosis == &quot;ASD&quot;, 1L, 0L),
+    sub_id = as.character(sub_id)
+  )
+
+y = pheno$y
+names(y) = pheno$sub_id
+
+# Keep track of subjects
+subject_ids = pheno$sub_id
+
+
+load_subject_ts = function(sub_id, data_dir = &quot;data/graph_data&quot;) {
+  # Two file path options
+  pathA = file.path(data_dir, paste0(&quot;CMU_a_00&quot;, sub_id, &quot;_rois_dosenbach160_1D.csv&quot;))
+  pathB = file.path(data_dir, paste0(&quot;CMU_b_00&quot;, sub_id, &quot;_rois_dosenbach160_1D.csv&quot;))
+  
+  # Pick whichever file exists
+  if (file.exists(pathA)) {path_to_use = pathA
+  } else if (file.exists(pathB)) {path_to_use = pathB
+  } else {stop(paste(&quot;No file found for subject&quot;, sub_id))}
+  
+  X = as.matrix(read.table(path_to_use, header = FALSE, sep = &quot;\t&quot;))
+  
+  # drop column 161 (bug)
+  if (ncol(X) &gt;= 161) {X = X[, -161, drop = FALSE]}
+  
+  # scale the ROIs
+  X_scaled = scale(X, center = TRUE, scale = TRUE)
+  return(X_scaled)
+}
+
+ts_scaled = lapply(subject_ids, load_subject_ts)
+names(ts_scaled) = subject_ids
+
+
+roi_map = read_csv(&quot;data/graph_data/dos160_labels.csv&quot;, col_names = c(&quot;roi&quot;, &quot;region&quot;), skip = 1) %&gt;%
+  mutate(
+    roi = as.integer(roi),
+    region = str_trim(region)
+  ) %&gt;% 
+  mutate(region = make.names(region))</code></pre>
+</div>
+<div id="data-pre-processing" class="section level3">
+<h3>Data Pre-Processing</h3>
+<p>To reduce dimensionality and improve the stability of graphical
+estimation, these ROIs were grouped into 40 broader regions using the
+mapping provided in <code>doi_labels.csv</code>. For each subject,
+ROI-level time series within the same region were averaged to produce a
+regional time series representation. This aggregation substantially
+reduces the number of conditional independence tests required by
+PC-based methods, improving statistical power and limiting the detection
+of spurious edges for our small sample <span
+class="math inline">\(n=27\)</span>. At the same time, reducing the
+number of variables relative to the number of time points improves the
+numerical stability of precision matrix estimation for graphical lasso.
+The regional aggregation provides a bias–variance trade-off that enables
+more reliable estimation of subject-level connectivity structure.</p>
+<p>Formally, for a subject with time-series matrix size <span
+class="math inline">\(X \in \mathbb{R}^{T \times 160}\)</span>, the data
+were collapsed into <span class="math inline">\(Z \in \mathbb{R}^{T
+\times 40}\)</span> by averaging ROIs within each aggregated region. All
+time-series data was scaled to have mean 0 and variance 1. From this
+point onward, all references to ROIs refer to the 40 standardized
+regions.</p>
+<p>The final dataset contains all 27 individuals’ various time-series
+data across 40 standardized regions, merged with their diagnosis
+label.</p>
+<pre class="r"><code>collapse_subject_to_regions = function(X, roi_map) {
+  stopifnot(is.matrix(X), ncol(X) == nrow(roi_map))
+
+  regions = roi_map$region
+  idx_by_region = split(seq_along(regions), regions)
+
+  Z = vapply(idx_by_region, function(idx) {
+    if (length(idx) == 1) X[, idx]
+    else rowMeans(X[, idx, drop = FALSE], na.rm = TRUE)
+  }, FUN.VALUE = numeric(nrow(X)))
+
+  Z = as.matrix(Z)
+  colnames(Z) = names(idx_by_region)
+  Z
+}
+
+# Region time series: list of T×K matrices
+ts_region = imap(ts_scaled, ~ collapse_subject_to_regions(.x, roi_map))</code></pre>
+</div>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<div id="graph-estimation-pc" class="section level3">
+<h3>Graph Estimation: PC</h3>
+<p>For each subject, we estimate an undirected graph skeleton using the
+PC algorithm applied to region-level fMRI time series, where each node
+represents one of the 40 brain regions and an edge indicates conditional
+dependence between two regions.</p>
+<pre class="r"><code>fit_pc_skeleton = function(X, alpha = 0.05, m.max = NULL) {
+  K = ncol(X)
+  if (is.null(m.max)) m.max = K - 2
+
+  labels = colnames(X)
+  if (is.null(labels)) labels = paste0(&quot;R&quot;, seq_len(K))
+
+  suffStat = list(C = cor(X, use = &quot;pairwise.complete.obs&quot;),
+                   n = nrow(X))
+
+  pc_fit = pc(suffStat = suffStat,
+               indepTest = gaussCItest,
+               labels = labels,
+               alpha = alpha,
+               m.max = m.max,
+               verbose = FALSE)
+
+  A = as(pc_fit@graph, &quot;matrix&quot;)
+  S = ((A != 0) | (t(A) != 0)) * 1L   # undirected skeleton
+  diag(S) = 0
+  S
+}
+
+count_edges = function(S) sum(S != 0) / 2</code></pre>
+<p>Since conditional independence is assessed via partial correlations,
+the PC algorithm assumes approximate multivariate Gaussianity of the
+region-level time series. It also assumes there is no unmeasured
+confounding. Graph estimation is performed separately for each subject,
+implicitly assuming within-subject temporal stationarity and
+independence across subjects.</p>
+<p>To control the number of false edges detected from conditional
+independence testing, we tuned <span
+class="math inline">\(\alpha\)</span> using a stability-sparsity
+tradeoff. For each candidate <span class="math inline">\(\alpha \in
+\{0.001, 0.005, 0.01, 0.025, 0.05, 0.1\}\)</span>, we evaluated the
+stability of the graph using bootstrap resampling of the time-series (50
+bootstraps per subject).</p>
+<pre class="r"><code>bootstrap_edge_probs = function(X, alpha, B = 50, m.max = NULL, seed = 1) {
+  set.seed(seed)
+  K = ncol(X)
+  counts = matrix(0L, K, K)
+
+  for (b in 1:B) {
+    idx = sample(1:nrow(X), replace = TRUE)
+    S_b = fit_pc_skeleton(X[idx, , drop = FALSE], alpha = alpha, m.max = m.max)
+    counts = counts + S_b
+  }
+
+  P = counts / B
+  diag(P) = 0
+  P
+}
+
+instability = function(P) mean(P * (1 - P))  # lower = more stable</code></pre>
+<p>For each bootstrap replicate, the PC skeleton was re-estimated, and
+“instability” was quantified as the proportion of edges that differed
+from the original estimate.</p>
+<pre class="r"><code>tune_alpha_all = function(ts_region, subject_ids,
+                           alphas = c(0.001, 0.005, 0.01, 0.02, 0.05, 0.1),
+                           B = 50, m.max = NULL, seed = 1) {
+
+  out = lapply(alphas, function(a) {
+
+    # ---- per-subject computations for THIS alpha ----
+    per_subj = lapply(seq_along(subject_ids), function(i) {
+      id = subject_ids[i]
+      X = ts_region[[id]]
+
+      P = bootstrap_edge_probs(X, alpha = a, B = B, m.max = m.max, seed = seed + i)
+      S = fit_pc_skeleton(X, alpha = a, m.max = m.max)
+
+      data.frame(
+        id = id,
+        alpha = a,
+        instab = instability(P),
+        edges  = count_edges(S),
+        stringsAsFactors = FALSE
+      )
+    })
+
+    per_subj = do.call(rbind, per_subj)
+
+    # ---- aggregate across ALL subjects (one row per alpha) ----
+    data.frame(
+      alpha = a,
+      instab_mean = mean(per_subj$instab, na.rm = TRUE),
+      instab_median = median(per_subj$instab, na.rm = TRUE),
+      instab_sd = sd(per_subj$instab, na.rm = TRUE),
+      edges_mean = mean(per_subj$edges, na.rm = TRUE),
+      edges_median = median(per_subj$edges, na.rm = TRUE),
+      edges_sd = sd(per_subj$edges, na.rm = TRUE),
+      n_subjects = nrow(per_subj),
+      stringsAsFactors = FALSE
+    )
+  })
+
+  do.call(rbind, out)
+}</code></pre>
+<p>Across all subjects, increasing <span
+class="math inline">\(\alpha\)</span> led to monotonic increases in both
+edge density and bootstrap instability. We therefore selected <span
+class="math inline">\(\alpha = 0.01\)</span> based on a
+stability–sparsity tradeoff, where we focused on retaining moderately
+sparse graphs with low variability across bootstrap samples and
+subjects. Results were qualitatively similar for <span
+class="math inline">\(\alpha \in \{0.01,0.025\}\)</span>, and <span
+class="math inline">\(\alpha = 0.01\)</span> was used for all downstream
+analyses.</p>
+<pre class="r"><code>alphas = c(0.001, 0.005, 0.01, 0.025, 0.05, 0.1)
+res_alpha = tune_alpha_all(ts_region, subject_ids, alphas = alphas, B = 50, seed = 1)
+res_alpha</code></pre>
+<table>
+<caption>Table 1: Tuning Alpha for PC</caption>
+<thead>
+<tr class="header">
+<th align="right">alpha</th>
+<th align="left">Instability Mean (SD)</th>
+<th align="left">Edge Counts Mean (SD)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.001</td>
+<td align="left">0.0167 (0.0022)</td>
+<td align="left">34 (8.5)</td>
+</tr>
+<tr class="even">
+<td align="right">0.005</td>
+<td align="left">0.0209 (0.0024)</td>
+<td align="left">43 (10.3)</td>
+</tr>
+<tr class="odd">
+<td align="right">0.010</td>
+<td align="left">0.0233 (0.0024)</td>
+<td align="left">48 (10.1)</td>
+</tr>
+<tr class="even">
+<td align="right">0.025</td>
+<td align="left">0.0273 (0.0026)</td>
+<td align="left">56 (9.8)</td>
+</tr>
+<tr class="odd">
+<td align="right">0.050</td>
+<td align="left">0.0310 (0.0027)</td>
+<td align="left">63 (10.7)</td>
+</tr>
+<tr class="even">
+<td align="right">0.100</td>
+<td align="left">0.0359 (0.0029)</td>
+<td align="left">74 (11.5)</td>
+</tr>
+</tbody>
+</table>
+<p>Using the selected global <span class="math inline">\(\alpha =
+0.01\)</span>, a PC skeleton was estimated for each subject. Skeleton
+adjacency matrices were vectorized by extracting upper-triangular edge
+indicators, producing a subject-by-edge matrix.</p>
+<pre class="r"><code>pc_skel_list_v1 = purrr::map(ts_region, ~ fit_pc_skeleton(.x, alpha = 0.01, m.max = NULL))</code></pre>
+</div>
+<div id="graph-estimation-graphical-lasso" class="section level3">
+<h3>Graph Estimation: Graphical Lasso</h3>
+<p>For each subject, we estimated an undirected functional connectivity
+graph using the graphical lasso, where nonzero off-diagonal entries of
+the estimated precision matrix indicate conditional dependence between
+regions.</p>
+<pre class="r"><code>fit_huge_glasso_skeleton = function(X, lambda, standardize = TRUE, eps = 1e-5) {
+
+  # huge can take a single lambda
+  fit = huge(X, method = &quot;glasso&quot;, lambda = lambda, verbose = FALSE)
+
+  # precision matrices
+  Theta = fit$icov[[1]]
+
+  S = (abs(Theta) &gt; eps) * 1L
+  diag(S) = 0L
+  S
+}
+
+count_edges = function(S) sum(S != 0) / 2</code></pre>
+<p>Graphical lasso assumes approximate multivariate Gaussianity of the
+region-level time series and sparsity of the underlying precision
+matrix. Estimation is performed separately for each subject, implicitly
+assuming within-subject stationarity and independence across subjects.
+These assumptions provide a good parallel to the PC implementation.</p>
+<p>The graphical lasso regularization parameter <span
+class="math inline">\(\lambda\)</span> was selected using the Stability
+Approach to Regularization Selection (StARS) implemented in the
+<code>huge</code> package. For each subject, graphical lasso models were
+fit across a grid of 30 logarithmically spaced <span
+class="math inline">\(\lambda\)</span> values ranging from 0.08 to
+0.9.</p>
+<pre class="r"><code>stars_select_lambda_one_subject = function(X, lambdas, standardize = TRUE, stars_thresh = 0.1, rep_num = 100, seed = 1) {
+  set.seed(seed)
+  fit = huge(X, method = &quot;glasso&quot;, lambda = lambdas, verbose = FALSE)
+
+  # STARS selection
+  sel = huge.select(fit, criterion = &quot;stars&quot;, stars.thresh = stars_thresh,
+                     stars.subsample.ratio = 0.5, rep.num = rep_num, verbose = FALSE)
+
+  list(
+    lambda_opt = sel$opt.lambda,
+    idx_opt    = sel$opt.index,
+    stars      = sel$stars  # vector over lambdas
+  )
+}</code></pre>
+<p>Stability was assessed using repeated subsampling of time points
+(subsampling ratio = 0.5, 50 repetitions), and instability was computed
+based on variability in edge inclusion across subsamples. For each
+subject, the optimal <span class="math inline">\(\lambda\)</span> was
+defined as the smallest value for which instability fell below 0.1.</p>
+<pre class="r"><code>tune_lambda_stars_all = function(ts_region, subject_ids, lambdas, standardize = TRUE, stars_thresh = 0.1,
+                                  rep_num = 100, seed = 1) {
+
+  per_subj = lapply(seq_along(subject_ids), function(i) {
+    id = subject_ids[i]
+    X = ts_region[[id]]
+
+    res = stars_select_lambda_one_subject(X = X, lambdas = lambdas, standardize = standardize, 
+                                           stars_thresh = stars_thresh, rep_num = rep_num, seed = seed + i)
+
+    data.frame(
+      id = id,
+      lambda_opt = res$lambda_opt,
+      idx_opt = res$idx_opt,
+      stringsAsFactors = FALSE
+    )
+  })
+
+  per_subj = do.call(rbind, per_subj)
+
+  # pick a global lambda across subjects
+  lambda_global = stats::median(per_subj$lambda_opt, na.rm = TRUE)
+
+  summary = data.frame(
+    stars_thresh = stars_thresh,
+    rep_num = rep_num,
+    lambda_global = lambda_global,
+    lambda_opt_mean = mean(per_subj$lambda_opt, na.rm = TRUE),
+    lambda_opt_median = stats::median(per_subj$lambda_opt, na.rm = TRUE),
+    lambda_opt_sd = stats::sd(per_subj$lambda_opt, na.rm = TRUE),
+    stringsAsFactors = FALSE
+  )
+
+  list(
+    per_subject = per_subj,
+    summary = summary
+  )
+}</code></pre>
+<p>To ensure consistent sparsity across subjects, a single global
+regularization parameter was selected as the median of the
+subject-specific optimal <span class="math inline">\(\lambda\)</span>
+values. <span class="math inline">\(\lambda = 0.5\)</span> was chosen to
+estimate graphical lasso networks for all subjects.</p>
+<pre class="r"><code>lambdas = exp(seq(log(0.08), log(0.9), length.out = 30))
+lambdas = sort(lambdas, decreasing = TRUE)
+
+res_stars = tune_lambda_stars_all(ts_region = ts_region, subject_ids = subject_ids, lambdas = lambdas,
+                                   stars_thresh = 0.1, rep_num = 50, seed = 1)
+
+global_lambda = res_stars$summary[[&quot;lambda_global&quot;]]
+
+ggplot(res_stars$per_subject, aes(x = lambda_opt)) +
+  geom_histogram(bins = 10, fill = &quot;gray70&quot;, color = &quot;black&quot;) +
+  geom_vline(xintercept = global_lambda, linetype = &quot;dashed&quot;, linewidth = 1) +
+  labs(
+    x = expression(&quot;STARS-selected &quot; * lambda),
+    y = &quot;Number of subjects&quot;,
+    title = &quot;Distribution of subject-level STARS-optimal λ values&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="images/graph_images/lambda_tuning.png" /></p>
+<p>Using the selected regularization parameter, subject-level graphical
+lasso models were refit using the full time series for each subject.
+Undirected binary adjacency matrices were constructed by thresholding
+the estimated precision matrices at 0.00001. Nonzero off-diagonal
+entries indicated conditional dependence between pairs of aggregated
+brain regions. Diagonal entries were set to zero, and all graphs were
+treated as unweighted and undirected.</p>
+<pre class="r"><code>glasso_fit_huge = function(X_subj, lambda, tol = 1e-5) {
+  if (nrow(X_subj) == 40) X_subj = t(X_subj)
+  stopifnot(ncol(X_subj) == 40)
+
+  X_subj = scale(X_subj)
+  
+  out = huge(X_subj, method = &quot;glasso&quot;, lambda = lambda)
+  
+  labels = colnames(X_subj)
+  if (is.null(labels)) labels = paste0(&quot;R&quot;, seq_len(K))
+
+  Theta = out$icov[[1]]
+  rownames(Theta) = colnames(Theta) = labels
+
+  # binary adjacency from Theta
+  A = (abs(Theta) &gt; tol) * 1
+  diag(A) = 0
+  rownames(A) = colnames(A) = labels
+
+  list(Theta = Theta, A = A)
+}
+
+# Build adjacency list for all participants
+glasso_fit_list = lapply(subject_ids, function(id) glasso_fit_huge(ts_region[[id]], global_lambda))
+names(glasso_fit_list) = subject_ids
+
+glasso_theta_list = lapply(glasso_fit_list, `[[`, &quot;Theta&quot;)
+glasso_adj_list = lapply(glasso_fit_list, `[[`, &quot;A&quot;)</code></pre>
+</div>
+<div id="graph-summary-metrics" class="section level3">
+<h3>Graph Summary Metrics</h3>
+<p>To obtain lower-dimensional representations of subject-level
+connectivity graphs suitable for classification, each estimated graph
+was summarized using a set of global network metrics. All graphs were
+treated as undirected and unweighted.</p>
+<p>For each subject, the following graph summary metrics were computed
+using the <code>igraph</code> package:</p>
+<ul>
+<li><p>Edge count: the total number of edges in the graph</p></li>
+<li><p>Mean degree: the average number of connections per ROI (strongly
+correlated to edge count but expressed at the ROI level)</p></li>
+<li><p>Degree standard deviation: variability of the number of
+connections across ROIs (higher values indicate that some regions act as
+hubs while others are weakly connected)</p></li>
+<li><p>Transitivity: how often neighboring ROIs are also connected to
+each other</p></li>
+<li><p>Global efficiency: can most regions be reached from one another
+through relatively short paths, even if the network is sparse?</p></li>
+<li><p>Largest component size: the number of ROIs contained in the
+largest connected subgraph</p></li>
+</ul>
+<pre class="r"><code>graph_metrics_from_adj = function(A) {
+  A = (A != 0) * 1L
+  diag(A) = 0L
+  g = graph_from_adjacency_matrix(A, mode = &quot;undirected&quot;, diag = FALSE)
+
+  p = nrow(A)
+  m = ecount(g)
+  density = if (p &gt; 1) 2*m / (p*(p-1)) else NA_real_
+  deg = degree(g)
+
+  comps = components(g)
+  gcc = if (m &gt; 0) max(comps$csize) else 0
+
+  data.frame(
+    edge_count = m,
+    mean_degree = mean(deg),
+    sd_degree = sd(deg),
+    transitivity = suppressWarnings(transitivity(g, type = &quot;global&quot;)), 
+    global_efficiency = suppressWarnings(global_efficiency(g)),
+    giant_comp_size = gcc,
+    stringsAsFactors = FALSE
+  )
+}</code></pre>
+<p>These metrics were selected to summarize both local and global
+properties of graph structure while substantially reducing
+dimensionality relative to the edge matrices. For each subject, the
+resulting metric values formed a feature vector that was used as input
+for downstream classification analyses.</p>
+<pre class="r"><code>#PC
+pc_metrics = do.call(rbind, lapply(subject_ids, function(id) {
+  A = pc_skel_list_v1[[id]]
+  cbind(id = id, graph_metrics_from_adj(A))
+}))
+pc_metrics$y = unname(y[pc_metrics$id])
+pc_metrics = pc_metrics[!is.na(pc_metrics$y), ]
+
+#Glasso
+glasso_metrics = do.call(rbind, lapply(subject_ids, function(id) {
+  A = glasso_adj_list[[id]]
+  cbind(id = id, graph_metrics_from_adj(A))
+}))
+glasso_metrics$y = unname(y[glasso_metrics$id])
+glasso_metrics = glasso_metrics[!is.na(glasso_metrics$y), ]</code></pre>
+</div>
+<div id="classification" class="section level3">
+<h3>Classification</h3>
+<p>Binary classification via simple logistic regression was performed to
+distinguish ASD from NT subjects using graph summary metrics as
+predictors. Given the small sample size, classification models were
+evaluated using leave-one-out cross-validation (LOOCV).</p>
+<p>Within each fold, features were standardized using statistics
+computed from the training set only and then applied to the held-out
+subject to prevent information leakage. The logistic regression model
+was fit on the training data and used to generate predicted
+probabilities for the held-out subject. This procedure was repeated for
+all subjects to obtain cross-validated predictions.</p>
+<p>Model performance was assessed using AUC. AUC was chosen as the
+primary metric because it is insensitive to class imbalance and provides
+a threshold-independent measure of discriminative performance.</p>
+<p>To assess the relative contribution of individual graph metrics, a
+leave-one-feature-out analysis was performed. For each metric, the
+classification procedure was repeated with that metric excluded, and the
+resulting change in AUC relative to the full model was recorded. Larger
+decreases in AUC were interpreted as indicating greater importance for
+classification performance.</p>
+<pre class="r"><code>loocv_auc_glm = function(df, feat) {
+  pred = rep(NA_real_, nrow(df))
+  for (i in seq_len(nrow(df))) {
+    train = df[-i, ]
+    test = df[i, , drop = FALSE]
+
+    # scale within fold (train only)
+    mu = sapply(train[, feat, drop=FALSE], mean, na.rm=TRUE)
+    sdv = sapply(train[, feat, drop=FALSE], sd, na.rm=TRUE); sdv[sdv==0] = 1
+
+    Xtr = as.data.frame(scale(train[, feat, drop=FALSE], center=mu, scale=sdv))
+    Xte = as.data.frame(scale(test[, feat, drop=FALSE],  center=mu, scale=sdv))
+
+    fit = glm(train$y ~ ., data = data.frame(y=train$y, Xtr), family = binomial())
+    pred[i] = predict(fit, newdata = Xte, type = &quot;response&quot;)
+  }
+  as.numeric(auc(roc(y, pred, quiet=TRUE)))
+}</code></pre>
+</div>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<div id="differences-between-pc-and-graphical-lasso"
+class="section level3">
+<h3>Differences between PC and graphical lasso</h3>
+<p>Figure 2 shows subject-level functional connectivity graphs estimated
+for an ASD participant (subject 50654) using the PC algorithm (<span
+class="math inline">\(\alpha\)</span> = 0.01) and graphical lasso (<span
+class="math inline">\(\lambda\)</span> = 0.5). The PC-derived graph is
+substantially sparser (41 edges) than the graphical lasso graph (103
+edges), with more isolated or weakly connected regions. In contrast, the
+graphical lasso graph exhibits denser connectivity and a more cohesive
+core structure.</p>
+<pre class="r"><code>A_pc = pc_skel_list_v1[[&quot;50654&quot;]]
+A_gl = glasso_adj_list[[&quot;50654&quot;]]
+
+met_pc = graph_metrics_from_adj(A_pc)
+met_gl = graph_metrics_from_adj(A_gl)
+
+metrics_compare = rbind(
+  cbind(method = &quot;PC&quot;, met_pc),
+  cbind(method = &quot;Glasso&quot;, met_gl)
+)
+metrics_compare
+
+g_pc = graph_from_adjacency_matrix(A_pc, mode = &quot;undirected&quot;, diag = FALSE)
+g_gl = graph_from_adjacency_matrix(A_gl, mode = &quot;undirected&quot;, diag = FALSE)
+
+V(g_pc)$name = colnames(A_pc)
+V(g_gl)$name = colnames(A_gl)
+layout_xy = layout_with_fr(g_gl)
+
+par(mfrow = c(1, 2), mar = c(0.5, 0.5, 3, 0.5))
+
+plot(g_pc, layout = layout_xy,
+     vertex.size = 6, vertex.label = NA,
+     main = paste0(&quot;PC (alpha = &quot;, 0.01, &quot;)\nEdges = &quot;, met_pc$edge_count))
+
+plot(g_gl, layout = layout_xy,
+     vertex.size = 6, vertex.label = NA,
+     main = paste0(&quot;Glasso (lambda = &quot;, global_lambda, &quot;)\nEdges = &quot;, met_gl$edge_count))</code></pre>
+<p><img src="images/graph_images/sample_graphs.png" /></p>
+<p>These qualitative differences are reflected in the corresponding
+graph summary metrics (Table 2). For this subject, graphical lasso
+yields higher mean degree and degree variability, higher transitivity,
+and greater global efficiency, indicating increased clustering and more
+efficient global integration. The PC graph, while sparser, includes a
+larger giant component, suggesting that fewer edges are sufficient to
+maintain overall connectivity across regions.</p>
+<pre class="r"><code>vals_pc = as.numeric(met_pc[1, ])
+vals_gl = as.numeric(met_gl[1, ])
+names(vals_pc) = names(met_pc)
+
+par(mfrow = c(1, 1), mar = c(8, 4, 2, 1))
+barplot(rbind(vals_pc, vals_gl),
+        beside = TRUE, las = 2,
+        legend.text = c(&quot;PC&quot;, &quot;Glasso&quot;),
+        args.legend = list(x = &quot;topright&quot;, bty = &quot;n&quot;),
+        main = paste(&quot;Graph metrics for subject 50654&quot;))</code></pre>
+<table>
+<caption>Table 2: Graph Metrics for Subject 50654</caption>
+<colgroup>
+<col width="16%" />
+<col width="11%" />
+<col width="17%" />
+<col width="13%" />
+<col width="18%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Method</th>
+<th align="right">Edge Count</th>
+<th align="left">Degree Mean (SD)</th>
+<th align="right">Transitivity</th>
+<th align="right">Global Efficiency</th>
+<th align="right">Largest Component Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PC</td>
+<td align="right">41</td>
+<td align="left">2.05 (1.3)</td>
+<td align="right">0.0395</td>
+<td align="right">0.2457</td>
+<td align="right">38</td>
+</tr>
+<tr class="even">
+<td align="left">Graphical Lasso</td>
+<td align="right">103</td>
+<td align="left">5.15 (4.5)</td>
+<td align="right">0.4265</td>
+<td align="right">0.3482</td>
+<td align="right">32</td>
+</tr>
+</tbody>
+</table>
+<p>We further tried to assess whether the structural differences
+observed in individual subjects generalized across the sample. We
+compared distributions of graph summary metrics between PC- and
+graphical-lasso–derived graphs (Figure 3). Across subjects, graphical
+lasso graphs exhibited greater variability in edge count and mean
+degree, with several subjects showing substantially denser connectivity
+patterns. In contrast, PC graphs were more tightly concentrated around
+lower edge counts and mean degrees, reflecting consistently sparser
+network estimates. PC graphs tended to have larger largest connected
+components, indicating that a greater proportion of regions belonged to
+a single connected subnetwork despite fewer edges overall. Graphical
+lasso graphs, while denser, showed more variability in connected
+component structure across subjects. Graphical lasso graphs exhibited
+substantially higher clustering, consistent with the presence of tightly
+interconnected groups of regions, whereas PC graphs showed uniformly low
+transitivity across subjects. Together, these sample-level results
+mirror the subject-level comparisons and highlight systematic
+differences in the two graphical modeling methods.</p>
+<p><img src="images/graph_images/sample_graph_metrics.png" /></p>
+</div>
+<div id="classification-analyses" class="section level3">
+<h3>Classification analyses</h3>
+<p>After an initial attempt to use edge-level representations for
+classification, graph summary metrics yielded improved predictive
+performance for both methods (see GitHub repo for code and figures on
+edge-level representations as input).</p>
+<pre class="r"><code>feature_cols = setdiff(names(pc_metrics), c(&quot;id&quot;, &quot;y&quot;))
+
+glasso_auc_base = loocv_auc_glm(glasso_metrics, feature_cols)
+
+glasso_imp = sapply(feature_cols, function(f) {
+  glasso_auc_drop = loocv_auc_glm(glasso_metrics, setdiff(feature_cols, f))
+  glasso_auc_base - glasso_auc_drop
+})
+
+sort(glasso_imp, decreasing = TRUE)
+
+pc_auc_base = loocv_auc_glm(pc_metrics, feature_cols)
+
+pc_imp = sapply(feature_cols, function(f) {
+  pc_auc_drop = loocv_auc_glm(pc_metrics, setdiff(feature_cols, f))
+  pc_auc_base - pc_auc_drop
+})
+
+sort(pc_imp, decreasing = TRUE)</code></pre>
+<p>When we used graph summary measures from the PC networks as inputs to
+the classifier, the model achieved an AUC of 0.64, indicating modest
+predictive performance (Table 3). To understand which features mattered
+most, we removed each graph metric one at a time and examined how
+classification performance changed. Removing measures related to
+clustering (transitivity) and how unevenly connections were distributed
+across regions (degree variability) led to the largest drops in
+performance. In contrast, removing simple measures of overall
+connectivity, such as the total number of edges, average degree, or the
+size of the largest connected component, had little effect. This
+suggests that the classifier relied more on how the network was
+organized than on how densely connected it was overall.</p>
+<p>When we used graph summary measures derived from the graphical lasso
+networks, classification performance improved, with the model achieving
+an AUC of 0.73 (Table 3). To understand which graph features were most
+important, we again removed each metric one at a time and examined how
+performance changed. The size of the largest connected component had the
+strongest impact on classification, indicating that how many brain
+regions were connected into a single network was particularly
+informative. Measures capturing variability in connectivity across
+regions, clustering, and overall network integration also contributed
+meaningfully to performance. In contrast, removing simple measures of
+overall connectivity, such as the total number of edges or the average
+number of connections per region, had little effect. This suggests that
+classification based on graphical lasso networks similarly relied on the
+organization of the network rather than edge-to-edge connection.</p>
+</div>
+</div>
+<div id="conclusions" class="section level2">
+<h2>Conclusions</h2>
+<p>In summary, PC and graphical lasso produced systematically different
+subject-level connectivity graphs. Graphical lasso yielded denser and
+more globally integrated networks, whereas PC produced sparser and more
+fragmented graphs. Low-dimensional graph summary metrics performed
+modestly for prediction. However, the stability of this signal remains
+uncertain given the small sample size. Feature importance analyses
+indicated that measures of global connectedness and network organization
+contributed most to classification performance for both methods, with
+higher variability in the graphical lasso method.</p>
+<p>Several limitations should be considered when interpreting these
+findings. First, the small sample size limits statistical power and
+makes classification performance sensitive to individual subjects,
+reducing confidence in the stability of predictive results. In addition,
+subject-level graph estimation yields high-dimensional edge
+representations that may not be well-suited for classification in small
+samples. While graph summary metrics provided a more stable alternative,
+correlations among these metrics may still inflate true predictive
+ability. Future work could address these challenges by incorporating
+larger datasets, applying nested cross-validation to better control
+model selection bias, and using permutation testing or bootstrap-based
+inference to assess robustness.</p>
+<p>Although classification performance was limited, these results
+underscore the challenges of prediction in small-sample neuroimaging
+studies and demonstrate the importance of careful graph construction and
+dimensionality reduction for meaningful downstream analysis.</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

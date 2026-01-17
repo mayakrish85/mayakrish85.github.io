@@ -6,7 +6,9 @@ navbar:
     - text: "Resume"
       href: about.html
     - text: "Projects"
-      href: projects.html
+      menu:
+        - text: "Graphical Models"
+          href: graph_models.html
     - icon: fa-envelope fa-lg
       href: mailto:<mk4995@cumc.columbia.edu>
     - icon: fa-github fa-lg
@@ -16,3 +18,4 @@ navbar:
 output:
   html_document:
     theme: cosmo
+    css: site.css
