@@ -628,7 +628,7 @@ When we used graph summary measures from the PC networks as inputs to the classi
 
 When we used graph summary measures derived from the graphical lasso networks, classification performance improved, with the model achieving an AUC of 0.73 (Table 3). To understand which graph features were most important, we again removed each metric one at a time and examined how performance changed. The size of the largest connected component had the strongest impact on classification, indicating that how many brain regions were connected into a single network was particularly informative. Measures capturing variability in connectivity across regions, clustering, and overall network integration also contributed meaningfully to performance. In contrast, removing simple measures of overall connectivity, such as the total number of edges or the average number of connections per region, had little effect. This suggests that classification based on graphical lasso networks similarly relied on the organization of the network rather than edge-to-edge connection.
 
-```{r classification-results-table, echo=FALSE, message=FALSE}
+```{r classification-results-table, echo=TRUE, eval=TRUE}
 library(knitr)
 library(kableExtra)
 
