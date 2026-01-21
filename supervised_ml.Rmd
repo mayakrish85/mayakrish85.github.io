@@ -98,8 +98,6 @@ train_sf = training(data_split)
 test_sf = testing(data_split)
 ```
 
-Summary statistics were calculated for the training set. Visualizations for the continuous predictors by outcome were also created. Significant associations and correlations between predictors were investigated for both continuous and categorical predictors.
-
 ### Summary statistics
 
 In the training dataset, there was a fairly even split between males/females (47-53%). There were much more White participants (66%) than any other race. A majority of participants were not smokers (60%). 85% of participants reported not having diabetes, whereas almost half (48%) reported hypertension. The average weight was 80kg across 800 participants, average height was 170cm, and the average BMI was 28 kg/m^2. The average systolic BP across participants was 130 mmHg, and the average LDL was 110 mg/dL. Of the 800 participants, 603 (75%) reported not having a severe flu in the past 6 months, and 197 (25%) reported having a severe flu.
@@ -256,7 +254,7 @@ confusionMatrix(
 
 Penalized logistic regression makes the same core assumptions as standard logistic regression—linearity of the log-odds, independent observations, and correctly specified model structure—but it is more robust to multicollinearity and helps prevent overfitting in high-dimensional settings. After tuning the parameters, the final PLR model had alpha = 0.0526 and lambda = 2.0427.
 
-![](images/supervised_ml/plr_plot.png){width="50%"}
+![](images/supervised_ml/plr_plot.png){width="70%"}
 
 ```{r plr}
 glmnGrid <- expand.grid(.alpha = seq(0, 1, length = 20),
@@ -311,7 +309,7 @@ vip::vip(model.glmn$finalModel)
 
 A MARS model was also tuned using repeated cross-validation to maximize ROC. The optimal configuration selected was a degree-1 model with 3 terms, indicating that the best performance was achieved using only main effects without interaction terms. 
 
-![](images/supervised_ml/mars_cv.png){width="50%"}
+![](images/supervised_ml/mars_cv.png){width="70%"}
 
 ```{r mars_cv}
 mars.grid = expand.grid(degree = 1:4,
@@ -409,7 +407,7 @@ plot(roc.lda, legacy.axes = TRUE, print.auc = TRUE)
 
 Linear SVM defines a linear boundary that separates the outcome values (severe flu vs. not severe). It assumes the relationship between predictors and the outcome is linear and can be sensitive to outliers without proper regularization.
 
-![](images/supervised_ml/svml_cv.png){width="50%" align="center"}
+![](images/supervised_ml/svml_cv.png){width="70%" align="center"}
 
 ```{r svml}
 svml.fit <- train(severe_flu ~ . ,
@@ -441,7 +439,7 @@ The final cost parameter after cross validation was 1.524.
 
 The SVM using a radial kernel uses a non-linear boundary to separate the classes (severe vs. not severe). It assumes the data should be separable, similar to the linear boundary SVM.
 
-![](images/supervised_ml/svmr_cv.png){width="50%"}
+![](images/supervised_ml/svmr_cv.png){width="70%"}
 
 ```{r svmr}
 svmr.grid <- expand.grid(C = exp(seq(-6, 2, len = 10)),
@@ -486,7 +484,7 @@ After CV, the optimal tuning parameter for cost was 1.25 and the optimal sigma w
 
 Random forest is another classifier that builds decision trees during training and outputs the class that most decision trees agree with. After CV, we found that the optimal tuning parameters was 1 predictor out of 11 and a minimum node size of 3.
 
-![](images/supervised_ml/rf_cv.png){width="50%"}
+![](images/supervised_ml/rf_cv.png){width="60%"}
 
 ```{r rf}
 rf.grid <- expand.grid(mtry = 1:14,
@@ -522,7 +520,7 @@ Adaptive boosting is an ensemble method that works by iteratively reweighting ob
 
 After cross validation, the optimal parameters were n.trees = 500 (grid from 500 to 5,000), interactions = 1 (1-6), shrinkage = 0.001 (0.001-0.005), min observations in node = 10 (10+).
 
-![](images/supervised_ml/ada_cv.png){width="50%"}
+![](images/supervised_ml/ada_cv.png){width="60%"}
 
 ```{r gbm}
 gbmA.grid <- expand.grid(n.trees = c(100,500,1000,5000,10000),
@@ -554,7 +552,7 @@ confusionMatrix(data = factor(gbmA.pred, levels = c("No", "Yes")),
 
 After training these models, resampling was done to compare the nine to each other to determine the best performing model. The test performance was compared based on ROC values. Below is a boxplot showing the comparative ROC values.
 
-![](images/supervised_ml/resample_boxplots.png){width="80%"}
+![](images/supervised_ml/resample_boxplot.png){width="80%"}
 
 ```{r comparison}
 res = resamples(

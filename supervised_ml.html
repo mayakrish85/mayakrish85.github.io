@@ -494,10 +494,6 @@ data_split = initial_split(severe_flu, 0.8)
 
 train_sf = training(data_split)
 test_sf = testing(data_split)</code></pre>
-<p>Summary statistics were calculated for the training set.
-Visualizations for the continuous predictors by outcome were also
-created. Significant associations and correlations between predictors
-were investigated for both continuous and categorical predictors.</p>
 </div>
 <div id="summary-statistics" class="section level3">
 <h3>Summary statistics</h3>
@@ -662,7 +658,7 @@ robust to multicollinearity and helps prevent overfitting in
 high-dimensional settings. After tuning the parameters, the final PLR
 model had alpha = 0.0526 and lambda = 2.0427.</p>
 <p><img src="images/supervised_ml/plr_plot.png"
-style="width:50.0%" /></p>
+style="width:70.0%" /></p>
 <pre class="r"><code>glmnGrid &lt;- expand.grid(.alpha = seq(0, 1, length = 20),
                         .lambda = exp(seq(-6, 1, length = 50)))
 
@@ -714,7 +710,7 @@ maximize ROC. The optimal configuration selected was a degree-1 model
 with 3 terms, indicating that the best performance was achieved using
 only main effects without interaction terms.</p>
 <p><img src="images/supervised_ml/mars_cv.png"
-style="width:50.0%" /></p>
+style="width:70.0%" /></p>
 <pre class="r"><code>mars.grid = expand.grid(degree = 1:4,
                         nprune = 2:20)
 model.mars &lt;- train(severe_flu ~ .,
@@ -818,7 +814,7 @@ plot(roc.lda, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
 values (severe flu vs. not severe). It assumes the relationship between
 predictors and the outcome is linear and can be sensitive to outliers
 without proper regularization.</p>
-<p><img src="images/supervised_ml/svml_cv.png" style="width:50.0%"
+<p><img src="images/supervised_ml/svml_cv.png" style="width:70.0%"
 align="center" /></p>
 <pre class="r"><code>svml.fit &lt;- train(severe_flu ~ . ,
                    data = train_sf,
@@ -850,7 +846,7 @@ plot(roc.svml, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
 the classes (severe vs. not severe). It assumes the data should be
 separable, similar to the linear boundary SVM.</p>
 <p><img src="images/supervised_ml/svmr_cv.png"
-style="width:50.0%" /></p>
+style="width:70.0%" /></p>
 <pre class="r"><code>svmr.grid &lt;- expand.grid(C = exp(seq(-6, 2, len = 10)),
                          sigma = exp(seq(-8, -1, len = 8)))
 
@@ -894,7 +890,7 @@ optimal sigma was 0.00248.</p>
 training and outputs the class that most decision trees agree with.
 After CV, we found that the optimal tuning parameters was 1 predictor
 out of 11 and a minimum node size of 3.</p>
-<p><img src="images/supervised_ml/rf_cv.png" style="width:50.0%" /></p>
+<p><img src="images/supervised_ml/rf_cv.png" style="width:60.0%" /></p>
 <pre class="r"><code>rf.grid &lt;- expand.grid(mtry = 1:14,
                        splitrule = &quot;gini&quot;,
                        min.node.size = 1:6)
@@ -930,7 +926,7 @@ performed poorly.</p>
 <p>After cross validation, the optimal parameters were n.trees = 500
 (grid from 500 to 5,000), interactions = 1 (1-6), shrinkage = 0.001
 (0.001-0.005), min observations in node = 10 (10+).</p>
-<p><img src="images/supervised_ml/ada_cv.png" style="width:50.0%" /></p>
+<p><img src="images/supervised_ml/ada_cv.png" style="width:60.0%" /></p>
 <pre class="r"><code>gbmA.grid &lt;- expand.grid(n.trees = c(100,500,1000,5000,10000),
                          interaction.depth = 1:6,
                          shrinkage = c(0.001, 0.003, 0.005),
@@ -962,7 +958,7 @@ confusionMatrix(data = factor(gbmA.pred, levels = c(&quot;No&quot;, &quot;Yes&qu
 to each other to determine the best performing model. The test
 performance was compared based on ROC values. Below is a boxplot showing
 the comparative ROC values.</p>
-<p><img src="images/supervised_ml/resample_boxplots.png"
+<p><img src="images/supervised_ml/resample_boxplot.png"
 style="width:80.0%" /></p>
 <pre class="r"><code>res = resamples(
   list(
