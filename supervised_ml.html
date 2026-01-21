@@ -811,15 +811,14 @@ confusionMatrix(
 roc.lda = roc(test_sf$severe_flu, lda.pred.prob[,2])
 plot(roc.lda, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
 </div>
-</div>
-<div id="svm-linear-kernel" class="section level2">
-<h2>SVM (Linear Kernel)</h2>
+<div id="svm-linear-kernel" class="section level3">
+<h3>SVM (Linear Kernel)</h3>
 <p>Linear SVM defines a linear boundary that separates the outcome
 values (severe flu vs. not severe). It assumes the relationship between
 predictors and the outcome is linear and can be sensitive to outliers
 without proper regularization.</p>
-<p><img src="images/supervised_ml/svml_cv.png"
-style="width:50.0%" /></p>
+<p><img src="images/supervised_ml/svml_cv.png" style="width:50.0%"
+align="center" /></p>
 <pre class="r"><code>svml.fit &lt;- train(severe_flu ~ . ,
                    data = train_sf,
                    method = &quot;svmLinear&quot;,
@@ -844,8 +843,8 @@ roc.svml = roc(test_sf$severe_flu, svml.pred.prob[,2])
 plot(roc.svml, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
 <p>The final cost parameter after cross validation was 1.524.</p>
 </div>
-<div id="svm-radial-kernel" class="section level2">
-<h2>SVM (Radial Kernel)</h2>
+<div id="svm-radial-kernel" class="section level3">
+<h3>SVM (Radial Kernel)</h3>
 <p>The SVM using a radial kernel uses a non-linear boundary to separate
 the classes (severe vs. not severe). It assumes the data should be
 separable, similar to the linear boundary SVM.</p>
@@ -888,8 +887,8 @@ plot(roc.svmr, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
 <p>After CV, the optimal tuning parameter for cost was 1.25 and the
 optimal sigma was 0.00248.</p>
 </div>
-<div id="random-forest-classifier" class="section level2">
-<h2>Random forest classifier</h2>
+<div id="random-forest-classifier" class="section level3">
+<h3>Random forest classifier</h3>
 <p>Random forest is another classifier that builds decision trees during
 training and outputs the class that most decision trees agree with.
 After CV, we found that the optimal tuning parameters was 1 predictor
@@ -921,8 +920,8 @@ confusionMatrix(
 roc.rf = roc(test_sf$severe_flu, rf.pred.prob[,2])
 plot(roc.rf, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
 </div>
-<div id="boosting-adaboost" class="section level2">
-<h2>Boosting (Adaboost)</h2>
+<div id="boosting-adaboost" class="section level3">
+<h3>Boosting (Adaboost)</h3>
 <p>Adaptive boosting is an ensemble method that works by iteratively
 reweighting observations. It focusing more on misclassified cases in
 each round so that subsequent models improve where earlier ones
@@ -956,8 +955,8 @@ confusionMatrix(data = factor(gbmA.pred, levels = c(&quot;No&quot;, &quot;Yes&qu
                 positive = &quot;Yes&quot;)</code></pre>
 </div>
 </div>
-<div id="model-comparison" class="section level1">
-<h1>Model Comparison</h1>
+<div id="model-comparison" class="section level2">
+<h2>Model Comparison</h2>
 <p>After training these models, resampling was done to compare the nine
 to each other to determine the best performing model. The test
 performance was compared based on ROC values. Below is a boxplot showing
@@ -993,8 +992,8 @@ the median and mean ROC AUCs were close together, that would mean that
 that the model’s performance was consistent across cross-validation
 folds, with little variation between the best and worst cases.</p>
 </div>
-<div id="final-model" class="section level1">
-<h1>Final Model</h1>
+<div id="final-model" class="section level2">
+<h2>Final Model</h2>
 <p>Based on the results from the model ROC comparison, the final model
 chosen for this study is the radial SVM. The most important variable
 here, as with many of the other models, was BMI, followed by weight and
@@ -1025,6 +1024,7 @@ needs of the researchers, it may be better to use and interpret one of
 those models. The interpretability of the model itself is more difficult
 for the radial SVM compared to the LDA or logistic, which is a notable
 limitation of this model.</p>
+</div>
 </div>
 
 

@@ -409,7 +409,8 @@ plot(roc.lda, legacy.axes = TRUE, print.auc = TRUE)
 
 Linear SVM defines a linear boundary that separates the outcome values (severe flu vs. not severe). It assumes the relationship between predictors and the outcome is linear and can be sensitive to outliers without proper regularization.
 
-![](images/supervised_ml/svml_cv.png){width="50%"}
+![](images/supervised_ml/svml_cv.png){width="50%" align="center"}
+
 ```{r svml}
 svml.fit <- train(severe_flu ~ . ,
                    data = train_sf,
