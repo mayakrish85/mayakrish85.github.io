@@ -1,5 +1,5 @@
 ---
-title: "supervised_ml"
+title: "Comparing Supervised ML Methods to Model Severe Flu Indicators"
 output: 
   html_document:
     toc: true
