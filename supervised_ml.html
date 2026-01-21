@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>supervised_ml</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="site.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Maya Krishnamoorthy</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="resume.html">Resume</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Projects
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="graph_models.html">Using Graphical Models to Model fMRI Data</a>
+    </li>
+    <li>
+      <a href="https://mayakrish85.github.io/t2d.github.io/index.html">Investigating Type 2 Diabetes</a>
+    </li>
+    <li>
+      <a href="stat_learning.html">Neural Network Regularization and Overfitting Analysis</a>
+    </li>
+    <li>
+      <a href="supervised_ml.html">Supervised ML Methods to Model Severe Flu</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="mailto:&lt;mk4995@cumc.columbia.edu&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/mayakrish85/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/mayakrishn/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">supervised_ml</h1>
+
+</div>
+
+
+<p>This project was completed in April 2025 for my course, “P8106: Data
+Science II,” at Columbia University.</p>
+<div class="project-tags">
+<p><span class="tag tag-method">Clinical risk prediction</span> <span
+class="tag tag-method">Machine learning</span> <span
+class="tag tag-analysis">SVMs</span> <span
+class="tag tag-analysis">Logistic regression</span> <span
+class="tag tag-data">Observational data</span> <span
+class="tag tag-analysis">ROC/AUC</span> <span
+class="tag tag-analysis">Cross validation</span></p>
+</div>
+<div id="project-description" class="section level1">
+<h1><strong>Project Description</strong></h1>
+<div id="course-description" class="section level2">
+<h2>Course Description</h2>
+<p>With the explosion of “Big Data” problems, statistical learning has
+become a hot field in many scientific areas. Students will learn how to
+explain concepts and methods in statistical learning, including but not
+limited to the bias/variance tradeoff, likelihood estimation, and
+resampling methods for model selection/asssessment. Students will
+explore both supervised (classification and regression tecniques) and
+unsupervised learning techniques and implement various statistical
+elearning methods in R. Upon completion of this course, students will be
+able to build a pipeline for predictive modeling: data preprocessing,
+model training, model interpretation.</p>
+</div>
+<div id="project-goals" class="section level2">
+<h2>Project Goals</h2>
+<p>A group of researchers conducted a study to evaluate antibody
+responses to a newly authorized vaccine. They have created a dataset
+collected from 1,000 participants aimed at understanding factors
+associated with the incidence of severe flu within 6 months
+post-vaccination. The researchers have expressed interest in exploring
+both advanced predictive modeling techniques, specifically boosting and
+support vector machines (SVM), and simpler, more interpretable methods.
+Using this dataset, the researchers planned to build a prediction model
+of antibody levels, aiming to understand how demographic and clinical
+factors influence antibody responses and how antibody levels change over
+time following vaccination.</p>
+<p>They are specifically interested in:</p>
+<ul>
+<li><p>Evaluating whether boosting and SVM provide superior predictive
+performance compared to simpler models.</p></li>
+<li><p>Developing a predictive risk score (i.e., the predicted
+probability) that quantifies the chance of experiencing severe flu based
+on individual participant characteristics.</p></li>
+<li><p>Identifying key demographic and clinical factors that predict the
+risk of severe flu and assessing how these factors influence the
+risk.</p></li>
+</ul>
+<p>Please complete a report that helps the researcher to answer the
+above questions of interest.</p>
+</div>
+</div>
+<div id="final-project" class="section level1">
+<h1><strong>Final Project</strong></h1>
+<p>All data and code is accessible <a
+href="https://github.com/mayakrish85/p8106_final">here</a>.</p>
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>The purpose of this study is to understand factors associated with
+the incidence of severe flu within 6 months post-vaccination. The data
+for this study is from 1,000 participants, and the outcome of interest
+is a binary variable indicating whether or not the participant had a
+severe flu.</p>
+</div>
+<div id="exploratory-data-analysis" class="section level2">
+<h2>Exploratory Data Analysis</h2>
+<div id="pre-processing" class="section level3">
+<h3>Pre-Processing</h3>
+<p>Before beginning any analysis, the dataset
+<code>severe_flu.csv</code> was imported and cleaned. To clean the data,
+the dataset was first checked for missingness, of which there was none.
+Categorical variables were changed to factor type variables and the id
+variable was removed from the dataset. Variables included age, gender
+(Female/Male), race (White/Asian/Black/Hispanic), smoking status (0 =
+never smoked, 1 = former smoker, 2 = current smoker), height (cm),
+weight (kg), BMI (kg/m^2), diabetes (Yes/No), hypertension (Yes/No),
+SBP, LDL, and severe_flu(Yes/No). The final dataset contained 1000
+observations and 12 variables (11 predictors, 1 outcome). The data was
+then split into train/test (800/200 observations) using seed 2025.</p>
+<pre class="r"><code>severe_flu = read.csv(&quot;data/severe_flu.csv&quot;)
+
+severe_flu = 
+  severe_flu %&gt;% 
+  mutate(
+    gender = factor(gender, levels = c(0, 1), labels = c(&quot;Female&quot;, &quot;Male&quot;)),
+    race = factor(race, levels = c(1, 2, 3, 4), labels = c(&quot;White&quot;, &quot;Asian&quot;, &quot;Black&quot;, &quot;Hispanic&quot;)),
+    smoking = factor(smoking, levels = c(0, 1, 2), labels = c(&quot;Never_smoked&quot;, &quot;Former_smoker&quot;, &quot;Current_smoker&quot;)),
+    diabetes = factor(diabetes, levels = c(0, 1), labels = c(&quot;No&quot;, &quot;Yes&quot;)),
+    hypertension = factor(hypertension, levels = c(0, 1), labels = c(&quot;No&quot;, &quot;Yes&quot;)),
+    severe_flu = factor(severe_flu, levels = c(0, 1), labels = c(&quot;No&quot;, &quot;Yes&quot;))
+  ) %&gt;% 
+  dplyr::select(-id)
+
+set.seed(2025)
+
+data_split = initial_split(severe_flu, 0.8)
+
+train_sf = training(data_split)
+test_sf = testing(data_split)</code></pre>
+<p>Summary statistics were calculated for the training set.
+Visualizations for the continuous predictors by outcome were also
+created. Significant associations and correlations between predictors
+were investigated for both continuous and categorical predictors.</p>
+</div>
+<div id="summary-statistics" class="section level3">
+<h3>Summary statistics</h3>
+<p>In the training dataset, there was a fairly even split between
+males/females (47-53%). There were much more White participants (66%)
+than any other race. A majority of participants were not smokers (60%).
+85% of participants reported not having diabetes, whereas almost half
+(48%) reported hypertension. The average weight was 80kg across 800
+participants, average height was 170cm, and the average BMI was 28
+kg/m^2. The average systolic BP across participants was 130 mmHg, and
+the average LDL was 110 mg/dL. Of the 800 participants, 603 (75%)
+reported not having a severe flu in the past 6 months, and 197 (25%)
+reported having a severe flu.</p>
+<p><img src="images/supervised_ml/summary_stats.png"
+style="width:50.0%" /></p>
+<pre class="r"><code>vtable::sumtable(train_sf, out = &quot;kable&quot;)</code></pre>
+<p>The set of boxplots below compares the distribution of continuous
+predictors across individuals with and without severe flu. Most
+predictors (like age, BMI, and weight) show similar distributions
+between the two groups.</p>
+<p><img src="images/supervised_ml/cont_predictors.png"
+style="width:50.0%" /></p>
+<pre class="r"><code># continuous predictors
+cont_vars = train_sf %&gt;% dplyr::select(-where(is.factor), -severe_flu)
+
+theme1 &lt;- trellis.par.get()
+theme1$plot.symbol$col &lt;- rgb(.2, .4, .2, .5)
+theme1$plot.symbol$pch &lt;- 16
+theme1$plot.line$col &lt;- rgb(.8, .1, .1, 1)
+theme1$plot.line$lwd &lt;- 2
+theme1$strip.background$col &lt;- rgb(.0, .2, .6, .2)
+trellis.par.set(theme1)
+
+# feature plot - box plot
+cont_plot = featurePlot(x = cont_vars,
+                        y = train_sf$severe_flu,
+                        plot = &quot;box&quot;,
+                        span = .5,
+                        labels = c(&quot;Predictors&quot;,&quot;Severe Flu&quot;),
+                        layout = c(3, 2))</code></pre>
+<p>The correlation plot shows pairwise Pearson correlations among
+continuous predictors of severe flu. Positive correlations (dark blue)
+appear between weight, BMI, and height, while a moderate negative
+correlation exists between BMI and height.</p>
+<p><img src="images/supervised_ml/correlation_predictors.png"
+style="width:70.0%" /></p>
+<pre class="r"><code># Correlation matrix
+corrplot(cor(cont_vars), method = &quot;circle&quot;, type = &quot;full&quot;, tl.cex = 0.5, title = &quot;Correlation between Continuous Predictors of Severe Flu&quot;)</code></pre>
+<p>The relative proportion of participants with severe flu is higher in
+those who have diabetes and who smoke. Hispanic participants also show a
+slightly higher incidence of severe flu than other groups.</p>
+<p><img src="images/supervised_ml/categorical_predictors.png"
+style="width:70.0%" /></p>
+<pre class="r"><code>plot_list &lt;- lapply(cat_columns, function(col) {
+  ggplot(train_sf, aes_string(x = col, fill = &quot;severe_flu&quot;)) +
+    geom_bar(position = &quot;dodge&quot;) +
+    labs(title = paste(&quot;Severe Flu by&quot;, col), x = col, y = &quot;Count&quot;) +
+    theme_minimal() +
+    coord_flip() +  # flip bars
+    theme(axis.text.x = element_text(size = 8),
+          plot.title = element_text(size = 10))
+})
+
+cat_plot &lt;- wrap_plots(plot_list, ncol = 2)  # fewer columns
+print(cat_plot)
+
+plot_list &lt;- lapply(cat_columns, function(col) {
+  ggplot(train_sf, aes_string(x = col, fill = &quot;severe_flu&quot;)) +
+    geom_bar(position = &quot;fill&quot;) +  # Proportion stacked
+    labs(title = paste(&quot;Severe Flu by&quot;, col),
+         x = col,
+         y = &quot;Proportion&quot;) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+    scale_fill_manual(values = c(&quot;No&quot; = &quot;#F8766D&quot;, &quot;Yes&quot; = &quot;#00BFC4&quot;)) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 9),
+          axis.text.y = element_text(size = 8),
+          plot.title = element_text(size = 10, face = &quot;bold&quot;))
+})
+cat_plot &lt;- wrap_plots(plot_list, ncol = 2)</code></pre>
+<p>Chi-square tests were also conducted to test for associations between
+categorical predictors, but no significant associations were found.</p>
+<pre class="r"><code>cat_vars &lt;- train_sf %&gt;% dplyr::select(where(is.factor), -severe_flu)
+cat_columns &lt;- colnames(cat_vars)
+comparisons &lt;- combn(cat_columns, 2, simplify = FALSE)
+
+categorical_df &lt;- cat_vars[, cat_columns] |&gt; 
+  drop_na()
+  
+chiseq_test &lt;- lapply(comparisons, function(x){
+  categorical_df &lt;- cat_vars |&gt; 
+    dplyr::select(x[1], x[2]) |&gt; 
+    drop_na()
+  res = chisq.test(table(categorical_df), 
+                   correct = TRUE) |&gt; 
+    broom::tidy() |&gt; 
+    mutate(group = paste(x[1], x[2], sep = &quot;:&quot;), 
+           `p.value` = signif(`p.value`, 3), 
+           statistic = round(statistic, 3))
+  
+  return(res)
+})
+
+chiseq_test &lt;- bind_rows(chiseq_test) 
+
+chiseq_test |&gt; 
+  dplyr::select(statistic, `p.value`, group) |&gt; 
+  arrange(`p.value`) |&gt; 
+  knitr::kable(caption = &quot;Chi-Squared Test between Categorical Covariates&quot;)</code></pre>
+</div>
+</div>
+<div id="model-training" class="section level2">
+<h2>Model Training</h2>
+<p>Nine models were trained: logistic, penalized logistic, MARS, GAM,
+LDA, SVM (linear), SVM (radial), random forest, and boosted. The
+evaluation metric of interest was ROC/AUC for both prediction accuracy
+and model comparison. 10-fold cross validation with 5 repeats was used
+to tune model parameters. As noted previously, a seed of 2025 was used
+for reproducibility. <code>caret</code> was used to train all
+models.</p>
+<pre class="r"><code>set.seed(2025)
+
+ctrl &lt;- trainControl(method = &quot;repeatedcv&quot;,
+                     repeats = 5,
+                     classProbs = TRUE,
+                     # allowParallel = TRUE,
+                     summaryFunction = twoClassSummary)</code></pre>
+<div id="logistic-regression" class="section level3">
+<h3>Logistic Regression</h3>
+<p>Given that the response variable, <code>severe_flu</code> is binary,
+the simplest suitable model to train was logistic regression. Logistic
+regression assumes that the log-odds of the binary outcome are a linear
+combination of the predictors, with independent observations and no
+multicollinearity among predictors.</p>
+<pre class="r"><code>glm.logit &lt;- train(severe_flu ~ .,
+                   data = train_sf,
+                   method = &quot;glm&quot;,
+                   metric = &quot;ROC&quot;,
+                   trControl = ctrl)
+
+# Step 1: Make predictions
+glm.pred.prob &lt;- predict(glm.logit, newdata = test_sf, type = &quot;prob&quot;)[, &quot;Yes&quot;]
+
+# Step 2: Convert probabilities to binary predictions using 0.5 cutoff
+glm.pred &lt;- rep(&quot;No&quot;, nrow(test_sf))  # default to negative class
+
+glm.pred[glm.pred.prob &gt; 0.5] &lt;- &quot;Yes&quot;
+
+# Step 3: Generate confusion matrix
+confusionMatrix(
+  data = factor(glm.pred, levels = c(&quot;No&quot;, &quot;Yes&quot;)),
+  reference = test_sf$severe_flu,
+  positive = &quot;Yes&quot;
+)</code></pre>
+</div>
+<div id="penalized-logistic-regression-plr" class="section level3">
+<h3>Penalized Logistic Regression (PLR)</h3>
+<p>Penalized logistic regression makes the same core assumptions as
+standard logistic regression—linearity of the log-odds, independent
+observations, and correctly specified model structure—but it is more
+robust to multicollinearity and helps prevent overfitting in
+high-dimensional settings. After tuning the parameters, the final PLR
+model had alpha = 0.0526 and lambda = 2.0427.</p>
+<p><img src="images/supervised_ml/plr_plot.png"
+style="width:50.0%" /></p>
+<pre class="r"><code>glmnGrid &lt;- expand.grid(.alpha = seq(0, 1, length = 20),
+                        .lambda = exp(seq(-6, 1, length = 50)))
+
+model.glmn &lt;- train(severe_flu ~ .,
+                 data = train_sf,
+                 method = &quot;glmnet&quot;,
+                 tuneGrid = glmnGrid,
+                 metric = &quot;ROC&quot;,
+                 preProcess = c(&quot;center&quot;, &quot;scale&quot;, &quot;zv&quot;),
+                 trControl = ctrl)
+
+# display best tuning parameters
+model.glmn$bestTune
+
+myCol &lt;- rainbow(25)
+myPar &lt;- list(superpose.symbol = list(col = myCol),
+              superpose.line = list(col = myCol))
+# ggplot(model.glmn, highlight = TRUE)
+plot(model.glmn, par.settings = myPar, xTrans = function(x) log(x))
+
+# Step 1: Predict probabilities on test data
+glmn.pred.prob &lt;- predict(model.glmn, newdata = test_sf, type = &quot;prob&quot;)
+
+# Step 2: Convert probabilities to binary predictions using 0.5 cutoff
+glmn.pred &lt;- rep(&quot;No&quot;, nrow(test_sf))  # default to negative class
+
+glmn.pred[glmn.pred.prob[ , &quot;Yes&quot;] &gt; 0.5] &lt;- &quot;Yes&quot;  # adjust column name if needed
+
+# Step 3: Generate confusion matrix
+confusionMatrix(
+  data = as.factor(glmn.pred),
+  reference = test_sf$severe_flu,
+  positive = &quot;Yes&quot;
+)
+
+# ROC
+roc.glmn = roc(test_sf$severe_flu, glmn.pred.prob[,2])
+plot(roc.glmn, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
+<p>The most important variables from this model were BMI and diabetes
+(Yes).</p>
+<p><img src="images/supervised_ml/vip_plr.png"
+style="width:50.0%" /></p>
+<pre class="r"><code>vip::vip(model.glmn$finalModel)</code></pre>
+</div>
+<div id="mars" class="section level3">
+<h3>MARS</h3>
+<p>A MARS model was also tuned using repeated cross-validation to
+maximize ROC. The optimal configuration selected was a degree-1 model
+with 3 terms, indicating that the best performance was achieved using
+only main effects without interaction terms.</p>
+<p><img src="images/supervised_ml/mars_cv.png"
+style="width:50.0%" /></p>
+<pre class="r"><code>mars.grid = expand.grid(degree = 1:4,
+                        nprune = 2:20)
+model.mars &lt;- train(severe_flu ~ .,
+                    data = train_sf,
+                    method = &quot;earth&quot;,
+                    tuneGrid = mars.grid,
+                    metric = &quot;ROC&quot;,
+                    trControl = ctrl)
+
+plot(model.mars)
+model.mars$bestTune
+coef(model.mars$finalModel)
+vip::vip(model.mars$finalModel)</code></pre>
+<p>As shown in the ROC tuning plot, higher-degree models (including
+interactions) generally under performed and led to reduced predictive
+accuracy. The variable importance plot highlights BMI and diabetes
+status as the most influential predictors in the final model, with BMI
+contributing most significantly to the prediction of severe flu
+outcomes. Other predictors, including smoking status and race,
+contributed marginally, while age, gender, and height had negligible
+impact.</p>
+<p><img src="images/supervised_ml/vip_mars.png"
+style="width:50.0%" /></p>
+<pre class="r"><code>mars.pred.prob = predict(model.mars, newdata = test_sf, type = &quot;prob&quot;)
+mars.pred = ifelse(mars.pred.prob[ , &quot;Yes&quot;] &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+confusionMatrix(
+  data = factor(mars.pred, levels = c(&quot;No&quot;, &quot;Yes&quot;)),
+  reference = test_sf$severe_flu,
+  positive = &quot;Yes&quot;
+)
+
+# ROC
+roc.mars = roc(test_sf$severe_flu, mars.pred.prob[,2])
+plot(roc.mars, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
+</div>
+<div id="gam" class="section level3">
+<h3>GAM</h3>
+<p>GAM used a binomial family with a logit link to model severe flu as a
+function of both linear and smooth (nonlinear) predictors. Smooth terms
+were applied to continuous variables such as age, SBP, LDL, BMI, height,
+and weight, where age, LDL, and BMI had the greatest nonlinearity. In
+contrast, SBP, height, and weight had near-zero EDFs, indicating little
+to no added flexibility over a linear effect.</p>
+<pre class="r"><code>model.gam &lt;- train(severe_flu ~ .,
+                   data = train_sf,
+                   method = &quot;gam&quot;,
+                   metric = &quot;ROC&quot;,
+                   trControl = ctrl)
+
+model.gam$finalModel
+plot(model.gam$finalModel)
+
+# Prediction
+gam.pred.prob = predict(model.gam, newdata = test_sf, type = &quot;prob&quot;)
+gam.pred = ifelse(gam.pred.prob[ , &quot;Yes&quot;] &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+confusionMatrix(
+  data = factor(gam.pred, levels = c(&quot;No&quot;, &quot;Yes&quot;)),
+  reference = test_sf$severe_flu,
+  positive = &quot;Yes&quot;
+)
+
+# ROC
+roc.gam = roc(test_sf$severe_flu, gam.pred.prob[,2])
+plot(roc.gam, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
+</div>
+<div id="lda" class="section level3">
+<h3>LDA</h3>
+<p>LDA (Linear Discriminant Analysis) assumes normally distributed
+predictors with equal covariance matrices across outcome classes. It
+finds a linear combination of features that best separates the classes,
+making it efficient and interpretable, but potentially limited when
+these assumptions are violated or when classes are not linearly
+separable.</p>
+<pre class="r"><code>model.lda &lt;- train(severe_flu ~ .,
+                   data = train_sf,
+                   method = &quot;lda&quot;,
+                   metric = &quot;ROC&quot;,
+                   trControl = ctrl)
+
+# Step 1: Predict probabilities on test data
+lda.pred.prob &lt;- predict(model.lda, newdata = test_sf, type = &quot;prob&quot;)
+
+# Step 2: Convert probabilities to binary predictions using 0.5 cutoff
+lda.pred &lt;- rep(&quot;No&quot;, nrow(test_sf))  # default to negative class
+lda.pred[lda.pred.prob[ , &quot;Yes&quot;] &gt; 0.5] &lt;- &quot;Yes&quot;  # adjust column name if needed
+
+# Step 3: Generate confusion matrix
+confusionMatrix(
+  data = as.factor(lda.pred),
+  reference = test_sf$severe_flu,
+  positive = &quot;Yes&quot;
+)
+
+# ROC
+roc.lda = roc(test_sf$severe_flu, lda.pred.prob[,2])
+plot(roc.lda, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
+</div>
+</div>
+<div id="svm-linear-kernel" class="section level2">
+<h2>SVM (Linear Kernel)</h2>
+<p>Linear SVM defines a linear boundary that separates the outcome
+values (severe flu vs. not severe). It assumes the relationship between
+predictors and the outcome is linear and can be sensitive to outliers
+without proper regularization.</p>
+<p><img src="images/supervised_ml/svml_cv.png"
+style="width:50.0%" /></p>
+<pre class="r"><code>svml.fit &lt;- train(severe_flu ~ . ,
+                   data = train_sf,
+                   method = &quot;svmLinear&quot;,
+                   tuneGrid = data.frame(C = exp(seq(-8, 2, len = 20))),
+                   preProcess = c(&quot;center&quot;, &quot;scale&quot;, &quot;zv&quot;),
+                   trControl = ctrl)
+
+plot(svml.fit, highlight = TRUE, xTrans = log)
+svml.fit$bestTune
+
+# Prediction
+svml.pred.prob = predict(svml.fit, newdata = test_sf, type = &quot;prob&quot;)
+svml.pred = ifelse(svml.pred.prob[ , &quot;Yes&quot;] &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+confusionMatrix(
+  data = factor(svml.pred, levels = c(&quot;No&quot;, &quot;Yes&quot;)),
+  reference = test_sf$severe_flu,
+  positive = &quot;Yes&quot;
+)
+
+# ROC
+roc.svml = roc(test_sf$severe_flu, svml.pred.prob[,2])
+plot(roc.svml, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
+<p>The final cost parameter after cross validation was 1.524.</p>
+</div>
+<div id="svm-radial-kernel" class="section level2">
+<h2>SVM (Radial Kernel)</h2>
+<p>The SVM using a radial kernel uses a non-linear boundary to separate
+the classes (severe vs. not severe). It assumes the data should be
+separable, similar to the linear boundary SVM.</p>
+<p><img src="images/supervised_ml/svmr_cv.png"
+style="width:50.0%" /></p>
+<pre class="r"><code>svmr.grid &lt;- expand.grid(C = exp(seq(-6, 2, len = 10)),
+                         sigma = exp(seq(-8, -1, len = 8)))
+
+svmr.fit &lt;- train(severe_flu ~ ., 
+                  data = train_sf,
+                  method = &quot;svmRadialSigma&quot;,
+                  tuneGrid = svmr.grid,
+                  preProcess = c(&quot;center&quot;, &quot;scale&quot;, &quot;zv&quot;),
+                  trControl = ctrl)
+
+svmr.fit$bestTune
+
+myCol &lt;- rainbow(25)
+myPar &lt;- list(superpose.symbol = list(col = myCol),
+superpose.line = list(col = myCol))
+plot(svmr.fit, highlight = TRUE, par.settings = myPar)
+
+plot(svmr.fit, transform.y = log, transform.x = log,
+     color.palette = terrain.colors)
+
+vip::vip(svmr.fit$finalModel)
+
+# Prediction
+svmr.pred.prob = predict(svmr.fit, newdata = test_sf, type = &quot;prob&quot;)
+svmr.pred = ifelse(svmr.pred.prob[ , &quot;Yes&quot;] &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+confusionMatrix(
+  data = factor(svmr.pred, levels = c(&quot;No&quot;, &quot;Yes&quot;)),
+  reference = test_sf$severe_flu,
+  positive = &quot;Yes&quot;
+)
+
+# ROC
+roc.svmr = roc(test_sf$severe_flu, svmr.pred.prob[,2])
+plot(roc.svmr, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
+<p>After CV, the optimal tuning parameter for cost was 1.25 and the
+optimal sigma was 0.00248.</p>
+</div>
+<div id="random-forest-classifier" class="section level2">
+<h2>Random forest classifier</h2>
+<p>Random forest is another classifier that builds decision trees during
+training and outputs the class that most decision trees agree with.
+After CV, we found that the optimal tuning parameters was 1 predictor
+out of 11 and a minimum node size of 3.</p>
+<p><img src="images/supervised_ml/rf_cv.png" style="width:50.0%" /></p>
+<pre class="r"><code>rf.grid &lt;- expand.grid(mtry = 1:14,
+                       splitrule = &quot;gini&quot;,
+                       min.node.size = 1:6)
+
+rf.fit &lt;- train(severe_flu ~ . ,
+                train_sf,
+                method = &quot;ranger&quot;,
+                tuneGrid = rf.grid,
+                metric = &quot;ROC&quot;,
+                trControl = ctrl)
+
+ggplot(rf.fit, highlight = TRUE)
+
+# Prediction
+rf.pred.prob = predict(rf.fit, newdata = test_sf, type = &quot;prob&quot;)
+rf.pred = ifelse(rf.pred.prob[ , &quot;Yes&quot;] &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+confusionMatrix(
+  data = factor(rf.pred, levels = c(&quot;No&quot;, &quot;Yes&quot;)),
+  reference = test_sf$severe_flu,
+  positive = &quot;Yes&quot;
+)
+
+# ROC
+roc.rf = roc(test_sf$severe_flu, rf.pred.prob[,2])
+plot(roc.rf, legacy.axes = TRUE, print.auc = TRUE)</code></pre>
+</div>
+<div id="boosting-adaboost" class="section level2">
+<h2>Boosting (Adaboost)</h2>
+<p>Adaptive boosting is an ensemble method that works by iteratively
+reweighting observations. It focusing more on misclassified cases in
+each round so that subsequent models improve where earlier ones
+performed poorly.</p>
+<p>After cross validation, the optimal parameters were n.trees = 500
+(grid from 500 to 5,000), interactions = 1 (1-6), shrinkage = 0.001
+(0.001-0.005), min observations in node = 10 (10+).</p>
+<p><img src="images/supervised_ml/ada_cv.png" style="width:50.0%" /></p>
+<pre class="r"><code>gbmA.grid &lt;- expand.grid(n.trees = c(100,500,1000,5000,10000),
+                         interaction.depth = 1:6,
+                         shrinkage = c(0.001, 0.003, 0.005),
+                         n.minobsinnode = 10)
+
+gbmA.fit &lt;- train(severe_flu ~ . ,
+                  data = train_sf,
+                  tuneGrid = gbmA.grid,
+                  trControl = ctrl,
+                  method = &quot;gbm&quot;,
+                  distribution = &quot;adaboost&quot;,
+                  metric = &quot;ROC&quot;,
+                  verbose = FALSE)
+
+ggplot(gbmA.fit, highlight = TRUE)
+gbmA.fit$bestTune
+summary(gbmA.fit$finalModel, las = 2, cBars = 7, cex.names = 0.6)
+
+# Prediction
+gbmA.pred = predict(gbmA.fit, newdata = test_sf)
+confusionMatrix(data = factor(gbmA.pred, levels = c(&quot;No&quot;, &quot;Yes&quot;)),
+                reference = test_sf$severe_flu,
+                positive = &quot;Yes&quot;)</code></pre>
+</div>
+</div>
+<div id="model-comparison" class="section level1">
+<h1>Model Comparison</h1>
+<p>After training these models, resampling was done to compare the nine
+to each other to determine the best performing model. The test
+performance was compared based on ROC values. Below is a boxplot showing
+the comparative ROC values.</p>
+<p><img src="images/supervised_ml/resample_boxplots.png"
+style="width:80.0%" /></p>
+<pre class="r"><code>res = resamples(
+  list(
+    logistic = glm.logit,
+    penalized_logistic = model.glmn,
+    mars = model.mars,
+    gam = model.gam,
+    lda = model.lda,
+    svm_linear = svml.fit,
+    svm_radial = svmr.fit,
+    rf = rf.fit,
+    adaBoost = gbmA.fit
+    )
+  )
+
+summary(res)
+
+bwplot(res, metric = &quot;ROC&quot;)</code></pre>
+<p>The boxplot shows that the best performing models (by ROC) were the
+radial kernel SVM, but there were four models that performed very
+similarly to that. Given the smaller length of the boxplot for the SVM
+with a radial kernel, we can proceed to evaluate this model, since that
+likely means that there was similar performance across the folds of CV.
+The radial SVM had a mean ROC AUC of 0.6856 and a median ROC AUC of
+0.6828. This means that the radial SVM had a moderate ability to
+distinguish between participants with and without severe flu. Given that
+the median and mean ROC AUCs were close together, that would mean that
+that the model’s performance was consistent across cross-validation
+folds, with little variation between the best and worst cases.</p>
+</div>
+<div id="final-model" class="section level1">
+<h1>Final Model</h1>
+<p>Based on the results from the model ROC comparison, the final model
+chosen for this study is the radial SVM. The most important variable
+here, as with many of the other models, was BMI, followed by weight and
+height. Compared to other models, it was surprising to see that diabetes
+did not have as strong of an effect as it did elsewhere.</p>
+<p><img src="images/supervised_ml/varimp_svmr.png"
+style="width:50.0%" /></p>
+<p>The predictive performance of this model was determined by computing
+the confusion matrix. The accuracy of this model was 0.75, meaning that
+75% of cases were classified correctly in the test data. The Kappa
+value, 0.2488, indicated fair agreement between the model’s predictions
+and the actual outcomes, after adjusting for chance. Across all models,
+it had the highest sensitivity on the test data of 0.2679 and had a
+specificity of 0.9375. The AUC graph below shows a fairly balanced
+trade-off between recognizing severe vs. non-severe cases of the
+flu.</p>
+<p><img src="images/supervised_ml/svmr_auc.png"
+style="width:50.0%" /></p>
+<p>Overall, the radial SVM performed pretty well on the test set in
+terms of accuracy, but that may be because of the imbalance of
+sensitivity vs. specificity. Since the model was very good at
+determining the non-severe cases, but not as good at deciding severe
+cases, the AUC and balanced accuracy were not necessarily very high.
+More tuning of the grid or parameters may be necessary to decide the
+final performance. Given the fact that slightly simpler models also
+performed similarly (as seen in the ROC boxplots), depending on the
+needs of the researchers, it may be better to use and interpret one of
+those models. The interpretability of the model itself is more difficult
+for the radial SVM compared to the LDA or logistic, which is a notable
+limitation of this model.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,5 +1,7 @@
 ---
 title: "Neural Network Regularization and Overfitting Analysis"
-format: html
+format: 
+  html:
+    theme: cosmo
 ---
 

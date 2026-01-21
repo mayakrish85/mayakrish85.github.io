@@ -13,6 +13,8 @@ navbar:
           href: https://mayakrish85.github.io/t2d.github.io/index.html
         - text: "Neural Network Regularization and Overfitting Analysis"
           href: stat_learning.html
+        - text: "Supervised ML Methods to Model Severe Flu"
+          href: supervised_ml.html
     - icon: fa-envelope fa-lg
       href: mailto:<mk4995@cumc.columbia.edu>
     - icon: fa-github fa-lg
